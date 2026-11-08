@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<style>
+  body{font:16px/1.4 system-ui,sans-serif;margin:0;padding:14px;background:#eef4fb;color:#0f2740}
+  h1{font-size:19px;margin:0 0 4px} h2{font-size:15px;margin:0 0 6px}
+  .card{background:#e0ebf8;border-radius:14px;padding:12px;margin-bottom:10px}
+  button,label.b{font:inherit;font-size:15px;display:inline-block;padding:9px 12px;margin:3px 3px 3px 0;border:0;border-radius:10px;background:#1f6fd1;color:#fff;font-weight:600;cursor:pointer}
+  button.sec,label.sec{background:#d2e2f6;color:#1f6fd1}
+  input,select{font:inherit;padding:8px;border:0;border-radius:8px;background:#d2e2f6;color:#0f2740;width:100%;box-sizing:border-box;margin:3px 0}
+  .meta{font-size:13px;color:#5b7390}
+  #log{background:#fff;border-radius:10px;padding:8px;font:13px/1.35 ui-monospace,monospace;max-height:340px;overflow:auto}
+  #log div{padding:3px 0;border-bottom:1px solid #e3ebf5;word-break:break-word}
+  .ok{color:#0a7a3d} .ko{color:#c2410c;font-weight:700}
+  img{border-radius:8px;margin:4px 4px 0 0}
+</style>
+</head>
+<body>
+<h1>🔧 Diagnostic du backend</h1>
+<div class="meta" id="etat">Non démarré</div>
+
+<div class="card">
+  <h2>1. Démarrage</h2>
+  <button onclick="demarrer()">▶ Démarrer (crée ta base perso si besoin)</button>
+  <button class="sec" onclick="charger()">⟳ Charger la base</button>
+  <select id="selBase" onchange="choisirBase(this.value)"></select>
+</div>
+
+<div class="card">
+  <h2>2. Éléments</h2>
+  <button onclick="ajouter()">➕ Ajouter un élément de test</button>
+  <button class="sec" onclick="pret(true)">🤝 Le prêter</button>
+  <button class="sec" onclick="pret(false)">↩ Marquer rendu</button>
+  <button class="sec" onclick="sensible()">🔒 Lire la valeur sensible</button>
+  <button class="sec" onclick="supprimer()">🗑 Supprimer l'élément</button>
+  <div class="meta" id="elCourant">Aucun élément de test sélectionné</div>
+</div>
+
+<div class="card">
+  <h2>3. Photo et son (sur l'élément de test)</h2>
+  <label class="b">📷 Photo<input type="file" accept="image/*" capture="environment" hidden onchange="photo(this.files[0])"></label>
+  <label class="b sec">🖼️ Galerie<input type="file" accept="image/*" hidden onchange="photo(this.files[0])"></label>
+  <label class="b sec">🎙️ Son<input type="file" accept="audio/*" hidden onchange="son(this.files[0])"></label>
+  <div id="medias"></div>
+</div>
+
+<div class="card">
+  <h2>4. Catégories</h2>
+  <button class="sec" onclick="noeud()">＋ Créer / renommer / supprimer une catégorie de test</button>
+</div>
+
+<div class="card">
+  <h2>5. Partage (propriétaire)</h2>
+  <input id="mail" type="email" placeholder="adresse Gmail de la personne">
+  <select id="droit"><option>modification</option><option>lecture</option></select>
+  <button onclick="partager()">Partager</button>
+  <button class="sec" onclick="membres()">Voir les membres</button>
+  <button class="sec" onclick="lien()">Lien d'invitation</button>
+  <button class="sec" onclick="creerBase()">➕ Créer une 2ᵉ base</button>
+</div>
+
+<div class="card"><h2>Journal</h2><div id="log"></div></div>
+
+<script>
+const INVITE = <?!= JSON.stringify(invite) ?>;
+const S = { baseId: '', data: null, elId: '' };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* Les lectures sont rejouées une fois si la connexion tombe (ex. retour de l'appareil photo sous Android). */
+const LECTURES = ['chargerBase', 'lireMiniatures', 'lirePhoto', 'lireSon', 'lireValeurSensible', 'demarrer', 'listerMembres'];
+const serveur = (fn, ...a) => {
+  const un = () => new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a));
+  return un().catch(async e => {
+    if (LECTURES.includes(fn) && /HTTP 0|NetworkError/i.test((e && e.message) || e)) { await new Promise(r => setTimeout(r, 1500)); return un(); }
+    throw e;
+  });
+};
+const resume = r => { const t = JSON.stringify(r); return t === undefined ? '' : (t.length > 260 ? t.slice(0, 260) + '…' : t); };
+function log(t, cls) { $('#log').insertAdjacentHTML('afterbegin', `<div class="${cls || ''}">${esc(t)}</div>`); }
+async function run(nom, fn) {
+  const t0 = Date.now();
+  try { const r = await fn(); log(`✔ ${nom} — ${Date.now() - t0} ms ${r === undefined ? '' : '→ ' + resume(r)}`, 'ok'); return r; }
+  catch (e) { log(`✘ ${nom} : ${(e && e.message) || e}`, 'ko'); }
+}
+function etat(t) { $('#etat').textContent = t; }
+/* S.last = dernière version de l'élément renvoyée par le serveur (plus fiable qu'un rechargement qui peut échouer) */
+function courant() { return (S.last && S.last.id === S.elId) ? S.last : (S.data && S.data.items.find(i => i.id === S.elId)); }
+function base() { if (!S.baseId) throw new Error('Clique d\'abord sur « Démarrer ».'); return S.baseId; }
+
+/* 1. Démarrage */
+async function demarrer() {
+  const r = await run('demarrer', () => serveur('demarrer', INVITE));
+  if (!r) return;
+  S.baseId = r.baseActive;
+  $('#selBase').innerHTML = r.bases.map(b => `<option value="${esc(b.id)}" ${b.id === S.baseId ? 'selected' : ''}>${esc(b.nom)} — ${esc(b.role || 'inaccessible')}</option>`).join('');
+  if (r.message) log('ℹ ' + r.message);
+  etat(r.email + ' · ' + r.bases.length + ' base(s)');
+  if (S.baseId) charger();
+}
+function choisirBase(id) { S.baseId = id; S.elId = ''; serveur('sauverPrefs', { baseActive: id }); charger(); }
+async function charger() {
+  const d = await run('chargerBase', async () => { const x = await serveur('chargerBase', base()); return x; });
+  if (!d) return;
+  S.data = d;
+  log(`📦 ${d.base.nom} (${d.base.role}) : ${d.items.length} éléments, ${d.types.length} catégories, ${d.emps.length} emplacements`);
+  majEl();
+}
+function majEl() { const e = courant(); $('#elCourant').textContent = e ? `Élément : « ${e.titre} » · prêté : ${e.pret ? 'oui' : 'non'} · photos : ${e.ph.length} · son : ${e.au ? 'oui' : 'non'}` : 'Aucun élément de test sélectionné'; }
+
+/* 2. Éléments */
+async function ajouter() {
+  if (!S.data) await charger();
+  const T = S.data.types.find(n => n.p), E = S.data.emps.find(n => n.p);
+  const el = await run('ajouterElement', () => serveur('ajouterElement', base(), {
+    titre: 'Test ' + new Date().toLocaleTimeString('fr-FR'), desc: 'Créé par la page de diagnostic <b>sans effet</b>',
+    t: T.id, e: E.id, tags: 'test diagnostic', sens: true, sv: 'code-secret-123' }));
+  if (el) { S.elId = el.id; S.last = el; charger(); }
+}
+async function pret(oui) {
+  if (!S.elId) return log('✘ Ajoute d\'abord un élément de test', 'ko');
+  const e = courant();
+  const r = await run(oui ? 'modifierElement (prêt)' : 'marquerRendu', () => oui
+    ? serveur('modifierElement', base(), { ...e, pret: true, pa: 'Marc (test)', dp: '', sv: null })
+    : serveur('marquerRendu', base(), S.elId));
+  if (r) { S.last = r; charger(); }
+}
+async function sensible() {
+  if (!S.elId) return log('✘ Ajoute d\'abord un élément de test', 'ko');
+  await run('lireValeurSensible', () => serveur('lireValeurSensible', base(), S.elId));
+}
+async function supprimer() {
+  if (!S.elId) return log('✘ Aucun élément', 'ko');
+  if (!confirm('Supprimer définitivement cet élément de test ?')) return;
+  const r = await run('supprimerElement', () => serveur('supprimerElement', base(), S.elId));
+  if (r) { S.elId = ''; S.last = null; $('#medias').innerHTML = ''; charger(); }
+}
+
+/* 3. Médias */
+function reduire(file, max, q) {
+  return new Promise((res, rej) => {
+    const r = new FileReader(); r.onerror = rej;
+    r.onload = () => { const im = new Image(); im.onerror = rej;
+      im.onload = () => { const s = Math.min(1, max / Math.max(im.width, im.height)); const c = document.createElement('canvas');
+        c.width = Math.round(im.width * s); c.height = Math.round(im.height * s); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', q)); };
+      im.src = r.result; };
+    r.readAsDataURL(file);
+  });
+}
+const lire = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+async function photo(file) {
+  if (!file) return;
+  if (!S.elId) return log('✘ Ajoute d\'abord un élément de test', 'ko');
+  const t0 = Date.now();
+  const [grande, mini] = await Promise.all([reduire(file, 900, 0.7), reduire(file, 160, 0.6)]);
+  log(`Compression : grande ${Math.round(grande.length * 0.75 / 1024)} Ko, miniature ${Math.round(mini.length * 0.75 / 1024)} Ko (${Date.now() - t0} ms)`);
+  const up = await run('envoyerPhoto', () => serveur('envoyerPhoto', base(), grande, mini));
+  if (!up) return;
+  const e = courant();
+  const m = await run('modifierElement (+photo)', () => serveur('modifierElement', base(), { ...e, ph: [...e.ph, up.id], sv: null }));
+  if (!m) return;
+  S.last = m;
+  await charger();
+  afficherMedias();
+}
+async function afficherMedias() {
+  const e = courant(); if (!e || !e.ph.length) return;
+  const mini = await run('lireMiniatures', () => serveur('lireMiniatures', base(), e.ph));
+  $('#medias').innerHTML = Object.values(mini || {}).map(u => `<img src="${esc(u)}">`).join('') + '<div class="meta">Miniatures. Touche une miniature pour charger la photo complète.</div>';
+  $('#medias').querySelectorAll('img').forEach((im, k) => im.onclick = async () => {
+    const p = await run('lirePhoto', () => serveur('lirePhoto', base(), Object.keys(mini)[k]));
+    if (p) im.src = p.dataUrl;
+  });
+}
+async function son(file) {
+  if (!file) return;
+  if (!S.elId) return log('✘ Ajoute d\'abord un élément de test', 'ko');
+  const up = await run('envoyerSon', async () => serveur('envoyerSon', base(), await lire(file)));
+  if (!up) return;
+  const e = courant();
+  const ms = await run('modifierElement (+son)', () => serveur('modifierElement', base(), { ...e, au: up.id, sv: null }));
+  if (ms) {
+    S.last = ms;
+    await charger();
+    const s = await run('lireSon', () => serveur('lireSon', base(), up.id));
+    if (s) $('#medias').insertAdjacentHTML('beforeend', `<audio controls src="${esc(s.dataUrl)}" style="width:100%"></audio>`);
+  }
+}
+
+/* 4. Catégories */
+async function noeud() {
+  const g = S.data.types.find(n => !n.p);
+  const n = await run('creerNoeud', () => serveur('creerNoeud', base(), 'T', 'Test ' + Date.now().toString().slice(-4), g.id));
+  if (!n) return;
+  await run('creerNoeud (doublon, doit échouer)', () => serveur('creerNoeud', base(), 'T', n.nom, g.id));
+  await run('renommerNoeud', () => serveur('renommerNoeud', base(), 'T', n.id, n.nom + ' renommée'));
+  await run('supprimerNoeud', () => serveur('supprimerNoeud', base(), 'T', n.id));
+  charger();
+}
+
+/* 5. Partage */
+async function partager() { await run('partagerBase', () => serveur('partagerBase', base(), $('#mail').value, $('#droit').value)); }
+async function membres() { await run('listerMembres', () => serveur('listerMembres', base())); }
+async function lien() { const l = await run('lienInvitation', () => serveur('lienInvitation', base())); if (l) log('🔗 ' + l); }
+async function creerBase() { if (await run('creerBase', () => serveur('creerBase', 'Base test ' + Date.now().toString().slice(-4)))) demarrer(); }
+
+demarrer();
+</script>
+</body>
+</html>

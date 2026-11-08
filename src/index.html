@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>Dis moi où c'est !</title>
+<style>
+:root{--bg:#eef4fb;--card:#fff;--ink:#0f2740;--mute:#5b7390;--line:#d3e0ef;--acc:#1f6fd1;--acc2:#e3effc;--acc-ink:#fff;--warn:#c2410c;--r:14px;
+ --g0:#d6e6fb;--g1:#fddede;--g2:#d9f3e2;--g3:#fdf0c9;--soft:#e0ebf8;--field:#d2e2f6}
+:root[data-theme=dark]{--bg:#0c1624;--card:#142238;--ink:#e6eefa;--mute:#93a9c4;--line:#243a58;--acc:#5aa3ff;--acc2:#1b3252;--acc-ink:#06121f;--warn:#fb923c;
+ --g0:#1b3252;--g1:#4a2326;--g2:#1d3d2b;--g3:#4a3f1a;--soft:#172a45;--field:#1f375a}
+/* Charte B — Océan */
+:root[data-charte=ocean]{--acc:#0e7c86;--acc2:#dff3f4;--bg:#edf6f7;--g0:#cfeef0;--g1:#fddccf;--g2:#f3ebcf;--g3:#e3dff7;--soft:#d9eef0;--field:#c6e6e9}
+:root[data-charte=ocean][data-theme=dark]{--acc:#4fd1d9;--acc2:#12363a;--bg:#0a1a1d;--card:#10272b;--line:#1f4247;--g0:#12363a;--g1:#47281f;--g2:#3d3721;--g3:#2a2650;--soft:#112d31;--field:#183d43}
+/* Charte C — Indigo */
+:root[data-charte=indigo]{--acc:#4338ca;--acc2:#e6e4fb;--bg:#eff0fb;--g0:#e0defb;--g1:#fddeea;--g2:#d8f1e7;--g3:#fdebd1;--soft:#e3e4fa;--field:#d3d5f6}
+:root[data-charte=indigo][data-theme=dark]{--acc:#9a93ff;--acc2:#25235a;--bg:#0f0f24;--card:#18183a;--line:#2e2e60;--g0:#25235a;--g1:#4d2140;--g2:#1f4234;--g3:#4a3320;--soft:#1d1d45;--field:#29295c}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.4 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:88px}
+body.busy::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,transparent,var(--acc),transparent);background-size:50% 100%;background-repeat:no-repeat;animation:bz 1s linear infinite}
+@keyframes bz{from{background-position:-50% 0}to{background-position:150% 0}}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;display:flex;align-items:center;gap:8px}
+header h1{font-size:17px;margin:0;flex:1;line-height:1.15;min-width:0}
+header .base{font-size:12px;color:var(--mute);display:block;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sw{width:26px;height:26px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px var(--line);padding:0;cursor:pointer;flex:none}
+.sw.on{box-shadow:0 0 0 2px var(--ink)}
+main{max-width:960px;margin:0 auto;padding:16px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--mute);padding:6px 0;font-size:9.5px;min-width:0;cursor:pointer;line-height:1.1}
+nav button b{display:block;font-size:18px}
+nav button.on{color:var(--acc);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.kpi b{font-size:28px;color:var(--acc);display:block}.kpi span{color:var(--mute);font-size:13px}
+h2{font-size:16px;margin:4px 0 10px}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.bar i{display:block;height:10px;background:var(--acc);border-radius:6px;min-width:4px}
+.bar span:first-child{width:150px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 8px;border-radius:8px}
+input,select,textarea,.pickbtn{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
+textarea{min-height:70px}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+.btn{font:inherit;cursor:pointer;display:inline-block;text-align:center;padding:10px 14px;border-radius:10px;background:var(--acc);color:var(--acc-ink);border:0;font-weight:600}
+.btn.sec{background:var(--acc2);color:var(--acc)}
+.btn.del{background:none;color:var(--warn);border:1px solid var(--warn)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:130px}
+.row>.btn{flex:0 0 auto;min-width:0}
+.item{display:flex;gap:12px;padding:10px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+.item:last-child{border:0}
+.thumb{width:52px;height:52px;border-radius:10px;background:var(--acc2);display:grid;place-items:center;font-size:24px;flex:none;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.meta{font-size:13px;color:var(--mute)}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;margin:2px 4px 2px 0}
+.tag.pret{background:#fde9d9;color:var(--warn)}
+:root[data-theme=dark] .tag.pret{background:#43230f}
+.modal{position:fixed;inset:0;background:#0009;z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px}
+@media(min-width:700px){.modal{align-items:center}.sheet{border-radius:20px}}
+.photos{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.slot{width:84px;height:84px;border-radius:10px;background:var(--acc2);color:var(--mute);display:grid;place-items:center;overflow:hidden;cursor:pointer;position:relative}
+.slot img{width:100%;height:100%;object-fit:cover}
+.slot .up{position:absolute;inset:0;display:grid;place-items:center;background:#000a;color:#fff;font-size:12px;text-align:center}
+.sens{background:var(--acc2);padding:8px 12px;border-radius:10px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:18px;z-index:70;font-size:14px;max-width:90%;text-align:center}
+.chk{display:flex;gap:8px;align-items:center;margin-top:10px}.chk input{width:auto}
+.badge-ro{background:var(--warn);color:#fff;border-radius:6px;padding:1px 6px;font-size:11px;margin-left:6px}
+.grp{border-radius:12px;padding:10px;margin-bottom:10px}
+.gh{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.pr{display:flex;align-items:center;gap:6px;padding:3px 4px}
+.pr>span{flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;background:color-mix(in srgb,var(--card) 70%,transparent)}
+.pr>span.sel{background:var(--card);font-weight:700;outline:2px solid var(--acc)}
+.mini{border:0;background:var(--card);color:var(--acc);border-radius:8px;padding:5px 9px;cursor:pointer;font-size:13px}
+.mini[disabled]{opacity:.4}
+.pickbtn{text-align:left;cursor:pointer;min-height:44px}
+.fc{display:inline-block;padding:5px 11px;border-radius:99px;margin:3px;cursor:pointer;border:2px solid transparent;font-size:13px;background:var(--card)}
+.fc.on{border-color:var(--acc);font-weight:700}
+details summary{cursor:pointer;font-weight:600;padding:6px 0}
+main.soft .card,main.soft .kpi{background:var(--soft)}
+main.soft input,main.soft select,main.soft textarea{background:var(--field);border-color:transparent}
+main.soft .fc{background:var(--field)}
+.tools{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.tools .btn{flex:1;min-width:0;padding:8px 6px;white-space:nowrap;font-size:14px}
+.tbw{overflow-x:auto}table.tb{width:100%;border-collapse:collapse;font-size:14px}
+.tb th{text-align:left;color:var(--mute);font-weight:600;padding:8px;border-bottom:2px solid var(--line);white-space:nowrap}
+.tb td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}.tb tr.r{cursor:pointer}.tb tr.r:hover{background:var(--acc2)}
+.viewer{position:fixed;inset:0;background:#000d;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}
+.viewer img{max-width:100%;max-height:78vh;border-radius:10px;object-fit:contain}
+.viewer .bar2{display:flex;gap:10px;margin-top:12px;align-items:center;color:#fff}
+.banner{background:var(--g3);border-radius:var(--r);padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.banner span{flex:1;min-width:160px}
+.linkbox{word-break:break-all;font-size:13px;background:var(--field);border-radius:10px;padding:8px;margin:6px 0;user-select:all}
+.desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:2px 0;color:var(--ink);opacity:.8}
+.node{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.node .thumb{width:30px;height:30px;font-size:15px;border-radius:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="appname">🔎 Dis moi où c'est !<span class="base" id="baseLabel"></span></h1>
+  <button class="btn sec" id="refBtn" title="Actualiser" style="padding:6px 10px" onclick="recharger()">🔄</button>
+  <button class="sw" data-c="azur" style="background:#1f6fd1" title="Charte Azur" onclick="setCharte('azur')"></button>
+  <button class="sw" data-c="ocean" style="background:#0e7c86" title="Charte Océan" onclick="setCharte('ocean')"></button>
+  <button class="sw" data-c="indigo" style="background:#4338ca" title="Charte Indigo" onclick="setCharte('indigo')"></button>
+  <button class="btn sec" id="themeBtn" title="Mode clair / sombre" style="padding:6px 10px">🌓</button>
+</header>
+<main id="view"><div class="card"><h2>⏳ Démarrage… <small class="meta">(v9)</small></h2><p class="meta">Si ce message reste affiché, le programme de la page n'a pas démarré.</p></div></main>
+<nav id="nav"></nav>
+<div id="modalRoot"></div>
+<div id="viewerRoot"></div>
+
+<script>
+/* Filet de sécurité : toute erreur s'affiche à l'écran (au lieu d'une page vierge) avec un bouton de remise à zéro */
+function resetLocal() {
+  try { Object.keys(localStorage).filter(k => k.indexOf('dmoc:') === 0).forEach(k => localStorage.removeItem(k)); } catch (e) { }
+  location.reload();
+}
+function showFatal(m) {
+  const v = document.getElementById('view'); if (!v) return;
+  v.className = '';
+  v.innerHTML = '<div class="card"><h2>⚠️ Un problème est survenu</h2><p style="word-break:break-word">' + String(m).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</p><div class="row"><button class="btn" onclick="location.reload()">Recharger</button><button class="btn sec" onclick="resetLocal()">Effacer les données du téléphone et recharger</button></div></div>';
+}
+window.addEventListener('error', e => {
+  let extra = '';
+  try {
+    const L = document.documentElement.outerHTML.split('\n'), n = e.lineno || 0;
+    extra = ' | colonne ' + (e.colno || '?') + ' | fichier ' + String(e.filename || '').slice(-40) + ' | AVANT: ' + (L[n - 2] || '').slice(0, 160) + ' | LIGNE: ' + (L[n - 1] || '').slice(Math.max(0, (e.colno || 1) - 80), (e.colno || 1) + 80) + ' | APRES: ' + (L[n] || '').slice(0, 160);
+  } catch (x) { }
+  let bad = '';
+  try {
+    const sc = [...document.scripts].map(x => x.text).sort((a, b) => b.length - a.length)[0] || '';
+    const lines = sc.split('\n'); let chunks = [], cur = [];
+    lines.forEach(l => { if (/^(async function|function|const|let|var|document|\$\()/.test(l) && cur.length) { chunks.push(cur); cur = []; } cur.push(l); });
+    if (cur.length) chunks.push(cur);
+    chunks.forEach(c => { try { new Function(c.join('\n')); } catch (x) { if (bad.length < 900) bad += ' || MORCEAU REFUSE (' + x.message + ') : ' + c.join('\n').slice(0, 450); } });
+    bad = ' || script: ' + lines.length + ' lignes, ' + sc.length + ' caractères' + bad;
+  } catch (x) { bad = ' || diag: ' + x.message; }
+  showFatal((e.message || 'Erreur') + (e.lineno ? ' (ligne ' + e.lineno + ')' : '') + extra + bad);
+});
+window.addEventListener('unhandledrejection', e => { const m = String((e.reason && e.reason.message) || e.reason || ''); if (!/HTTP 0|NetworkError|Failed to fetch/i.test(m) && !document.querySelector('#view .card')) showFatal(m); });
+</script>
+<script>
+const INVITE = "__INVITE__";
+
+/* ====================================================================
+ * Utilitaires
+ * ==================================================================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const okId = s => typeof s === 'string' && /^[\w-]{1,80}$/.test(s);
+const okMini = u => typeof u === 'string' && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(u);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const msg = e => String((e && e.message) || e || 'Erreur').replace(/^(Error|Exception):\s*/i, '');
+const LS = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { } }
+};
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const d = n => { const x = new Date(); x.setDate(x.getDate() - n); return x.toISOString().slice(0, 10); };
+const fr = s => s ? s.split('-').reverse().join('/') : '';
+const uid = () => 'x' + Math.random().toString(36).slice(2, 9);
+function ago(s) { const a = new Date(s), n = new Date(); let m = (n.getFullYear() - a.getFullYear()) * 12 + n.getMonth() - a.getMonth(); if (n.getDate() < a.getDate()) m--; if (m < 1) return 'ce mois-ci'; const y = Math.floor(m / 12), r = m % 12; return 'il y a ' + (y ? y + ' an' + (y > 1 ? 's' : '') : '') + (y && r ? ' ' : '') + (r ? r + ' mois' : ''); }
+function toast(m, ms) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.body.appendChild(t); setTimeout(() => t.remove(), ms || 2200); }
+
+/* Appels au serveur : barre de progression, relance automatique des LECTURES si la connexion tombe */
+let busyN = 0;
+function busy(n) { busyN += n; document.body.classList.toggle('busy', busyN > 0); }
+const rpc = (fn, ...a) => new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a));
+const LECT = new Set(['chargerBase', 'lireMiniatures', 'lirePhoto', 'lireSon', 'lireValeurSensible', 'demarrer', 'listerMembres']);
+async function api(fn, ...a) {
+  busy(1);
+  try {
+    try { return await rpc(fn, ...a); }
+    catch (e) {
+      if (LECT.has(fn) && /HTTP 0|NetworkError|Failed to fetch/i.test(msg(e))) { await sleep(1500); return await rpc(fn, ...a); }
+      throw e;
+    }
+  } finally { busy(-1); }
+}
+/* Action déclenchée par l'utilisateur : en cas d'erreur, on l'affiche et on renvoie undefined */
+async function act(fn) { try { return await fn(); } catch (e) { toast(msg(e), 4500); return undefined; } }
+
+/* ====================================================================
+ * État
+ * ==================================================================== */
+let types = [], emps = [], items = [];
+const S = { view: 'home', base: null, bases: [], email: '', theme: 'light', charte: 'azur', revealed: {}, sv: {}, loaded: false, error: '', tLoad: 0 };
+let H = { q: '', done: false };
+const M0 = () => ({ q: '', T: new Set(), E: new Set(), pret: '', sens: '', photo: '', son: '', d1: '', d2: '', sort: 'date', dir: 'desc', mode: 'list', a1: '', a2: '', fopen: false });
+let M = M0();
+const prefs0 = LS.get('dmoc:prefs') || {};
+S.theme = prefs0.theme || S.theme; S.charte = prefs0.charte || S.charte;
+
+/* Nettoyage des données reçues (un membre peut modifier le Sheet à la main : on ne fait jamais confiance aux identifiants) */
+const okIc = s => typeof s === 'string' && s.length <= 12 && !/[<>&"'`\\$]/.test(s);
+function arbre(list) {
+  const out = (list || []).filter(n => n && okId(n.id)).map(n => ({ id: n.id, nom: String(n.nom || ''), p: okId(n.p) ? n.p : null, ic: okIc(n.ic) ? n.ic : '', ph: okId(n.ph) ? n.ph : '' }));
+  const ids = new Set(out.map(n => n.id));
+  out.forEach(n => { if (n.p && !ids.has(n.p)) n.p = null; });
+  const by = new Map(out.map(n => [n.id, n]));
+  out.forEach(n => { let x = n, i = 0; while (x && x.p && i < 60) { x = by.get(x.p); i++; } if (i >= 60) n.p = null; });
+  return out;
+}
+function sane(i) {
+  if (!i || !okId(i.id)) return null;
+  const ids = a => (Array.isArray(a) ? a : []).filter(okId);
+  return { id: i.id, titre: String(i.titre || ''), desc: String(i.desc || ''), t: okId(i.t) ? i.t : '', t2: okId(i.t2) ? i.t2 : '', e: okId(i.e) ? i.e : '', e2: okId(i.e2) ? i.e2 : '',
+    ph: ids(i.ph), au: okId(i.au) ? i.au : null, da: String(i.da || ''), df: String(i.df || ''), pret: !!i.pret, pa: String(i.pa || ''), dp: String(i.dp || ''),
+    sens: !!i.sens, tags: String(i.tags || ''), dc: String(i.dc || ''), dh: String(i.dh || ''), date: String(i.date || ''), par: String(i.par || '') };
+}
+let cacheT = null;
+function cacheSoon() {
+  clearTimeout(cacheT);
+  cacheT = setTimeout(() => { if (S.base) LS.set('dmoc:b:' + S.base.id, { base: S.base, types, emps, items, t: Date.now() }); }, 800);
+}
+let HAY = new WeakMap();
+function applyData(dt) {
+  types = arbre(dt.types); emps = arbre(dt.emps);
+  items = (dt.items || []).map(sane).filter(Boolean);
+  HAY = new WeakMap();
+}
+function setBase(dt) {
+  applyData(dt);
+  S.base = { id: dt.base.id, nom: dt.base.nom, role: dt.base.role };
+  const b = S.bases.find(x => x.id === S.base.id); if (b) { b.nom = S.base.nom; b.role = S.base.role; }
+  S.loaded = true; S.error = ''; S.tLoad = Date.now();
+  LS.set('dmoc:b:' + S.base.id, { base: S.base, types, emps, items, t: Date.now() });
+  savePrefs(true);
+  render();
+}
+function upsert(el) {
+  const s = sane(el); if (!s) return;
+  const k = items.findIndex(x => x.id === s.id);
+  if (k >= 0) items[k] = s; else items.push(s);
+  cacheSoon();
+}
+
+/* ====================================================================
+ * Arbres : 'T' = catégories, 'E' = emplacements
+ * ==================================================================== */
+const L = k => k === 'T' ? types : emps;
+const N = (k, id) => L(k).find(x => x.id === id);
+const kids = (k, id) => { const r = [id]; L(k).filter(x => x.p === id).forEach(c => r.push(...kids(k, c.id))); return r; };
+const root = (k, id) => { let n = N(k, id), i = 0; while (n && n.p && i++ < 60) n = N(k, n.p); return n; };
+const path = (k, id, skip) => { const n = N(k, id); if (!n) return ''; if (!n.p) return skip ? '' : n.nom; const up = path(k, n.p, skip); return up ? up + ' › ' + n.nom : n.nom; };
+const gcol = (k, id) => { const r = root(k, id); if (!r) return 'var(--card)'; const i = L(k).filter(x => !x.p).findIndex(x => x.id === r.id); return `var(--g${i % 4})`; };
+const icOf = (k, id) => { let n = N(k, id), i = 0; while (n && i++ < 60) { if (n.ic) return n.ic; n = n.p ? N(k, n.p) : null; } return ''; };
+const chip = (k, id, pre = '') => id && N(k, id) ? `<span class="tag" style="background:${gcol(k, id)}">${icOf(k, id) ? esc(icOf(k, id)) + ' ' : pre}${esc(path(k, id, k === 'T'))}</span>` : '';
+const chainPh = (k, id) => { const r = []; let n = N(k, id), i = 0; while (n && i++ < 60) { if (n.ph) r.unshift(n); n = n.p ? N(k, n.p) : null; } return r; };
+const placeList = i => [...chainPh('E', i.e), ...chainPh('E', i.e2)].filter((n, k, a) => a.findIndex(x => x.id === n.id) === k);
+const has = (k, id, i) => { const ks = kids(k, id); return k === 'T' ? ks.includes(i.t) || ks.includes(i.t2) : ks.includes(i.e) || ks.includes(i.e2); };
+const ro = () => !!S.base && S.base.role === 'lecture';
+
+/* ====================================================================
+ * Préférences, thème
+ * ==================================================================== */
+function savePrefs(withBase) {
+  LS.set('dmoc:prefs', { theme: S.theme, charte: S.charte, baseActive: S.base ? S.base.id : (LS.get('dmoc:prefs') || {}).baseActive });
+  const p = { theme: S.theme, charte: S.charte }; if (withBase && S.base) p.baseActive = S.base.id;
+  api('sauverPrefs', p).catch(() => { });
+}
+function applyTheme() { document.documentElement.dataset.theme = S.theme; document.documentElement.dataset.charte = S.charte; document.querySelectorAll('.sw').forEach(b => b.classList.toggle('on', b.dataset.c === S.charte)); }
+function setCharte(c) { S.charte = c; savePrefs(); applyTheme(); }
+$('#themeBtn').onclick = () => { S.theme = S.theme === 'light' ? 'dark' : 'light'; savePrefs(); applyTheme(); };
+
+/* ====================================================================
+ * Miniatures : chargées par lot (un seul appel serveur), jamais une par une
+ * ==================================================================== */
+const TH = {}; const thPend = new Set();
+function needMinis() {
+  if (!S.base) return;
+  const ids = [...new Set([...document.querySelectorAll('[data-ph]')].map(e => e.dataset.ph))].filter(id => okId(id) && !(id in TH) && !thPend.has(id));
+  for (let k = 0; k < ids.length; k += 50) {
+    const lot = ids.slice(k, k + 50); lot.forEach(id => thPend.add(id));
+    api('lireMiniatures', S.base.id, lot)
+      .then(r => { lot.forEach(id => { const u = r && r[id]; TH[id] = okMini(u) ? u : ''; }); fillMinis(); })
+      .catch(() => { }).finally(() => lot.forEach(id => thPend.delete(id)));
+  }
+}
+function fillMinis() {
+  document.querySelectorAll('[data-ph]').forEach(e => {
+    const u = TH[e.dataset.ph];
+    if (u && !e.querySelector('img')) { const im = new Image(); im.src = u; e.textContent = ''; e.appendChild(im); }
+  });
+}
+
+/* ====================================================================
+ * Navigation et affichage général
+ * ==================================================================== */
+const NAV = [['home', '🏠', 'Accueil'], ['dash', '📊', 'Tableaux de bord'], ['infos', '🗃️', 'Mes Infos'], ['manage', '🗂️', 'Catégories & emplacements'], ['add', '➕', 'Ajouter'], ['bases', '👥', 'Bases'], ['aide', 'ℹ️', 'Aide']];
+function nav() { $('#nav').innerHTML = NAV.map(([k, i, l]) => `<button class="${S.view === k ? 'on' : ''}" onclick="go('${k}')"><b>${i}</b>${l}</button>`).join(''); }
+S.aide = 'about';
+function setAide(k) { S.aide = k; vAide(); window.scrollTo(0, 0); }
+function vAide() {
+  const tab = (k, l) => `<button class="btn ${S.aide === k ? '' : 'sec'}" style="flex:1;min-width:0;padding:9px 6px;font-size:14px" onclick="setAide('${k}')">${l}</button>`;
+  const li = a => '<ul style="margin:6px 0 0;padding-left:20px">' + a.map(t => '<li style="margin:4px 0">' + t + '</li>').join('') + '</ul>';
+  let h = '';
+  if (S.aide === 'about') {
+    h = `<div class="card"><h2>🎯 Le problème que résout l'application</h2>
+      <p>« Où ai-je rangé la facture de la chaudière ? », « À qui ai-je prêté la perceuse ? », « Quel est le code d’accès ? », « Quelle est l’adresse de mon client ? », « Dans quel dossier est cette photo ? », « Quand est-on parti à Florence et où sont les photos du voyage ? », « Où sont les coordonnées de mon assurance vie, de mon fournisseur internet ? », « Où se trouvent tous les objets, le disjoncteur, l’arrivée d’eau, le code wifi, le parking et autres infos de ma location Airbnb ? »…<br>Nos affaires, nos papiers et nos informations sont dispersés : tiroirs, boîtes, cabinet à outils, ordinateur, téléphone, cloud, carnets. On perd du temps, on rachète ce qu'on possède déjà, on oublie à qui on a prêté.</p>
+      <p><b>« Dis moi où c'est ! » est un carnet d'adresses de tes affaires, tes infos et de tes idées. Tout se retrouve à partir d’un seul champ de recherche sur ton téléphone.</b> Tu y notes <i>quoi</i> et <i>où</i> (avec une photo, un son, une description). Les objets physiques comme les choses immatérielles (fichiers, photos, idées, codes, contrats, abonnements) sont traités de la même façon.</p></div>
+    <div class="card"><h2>👤 Ce que ça change pour toi</h2>${li([
+      '<b>Retrouver en quelques secondes</b> : une seule recherche pour tout, sans te souvenir où tu as cherché la dernière fois.',
+      '<b>Savoir qui a tes affaires</b> : tes prêts sont suivis, avec le nom de la personne et la date.',
+      '<b>Garder les infos sensibles à l\u2019abri</b> : codes et numéros sont masqués tant que tu ne les affiches pas.',
+      '<b>Partager avec la famille</b> : une base commune (outils de la maison, papiers du foyer) tout en gardant ta base personnelle privée.',
+      '<b>Ne plus racheter</b> ce que tu as déjà.', '<b>Retrouver</b> garanties et dates d\u2019achat.',
+      '<b>Utiliser partout</b> : sur téléphone comme sur ordinateur, avec tes propres données dans ton propre Google Drive.'])}</div>
+    <div class="card"><h2>🔐 Où sont tes données ?</h2><p>Chaque base est un classeur Google Sheet et un dossier Google Drive dans <b>ton</b> Drive. Rien n'est stocké ailleurs. Une base personnelle est privée ; une base partagée reste dans le Drive de son propriétaire, qui choisit qui peut la lire ou la modifier.</p></div>`;
+  } else if (S.aide === 'fonc') {
+    const bloc = (t, a) => `<div class="card"><h2>${t}</h2>${li(a)}</div>`;
+    h = bloc('🔍 Retrouver', ['Recherche multi-mots sur le titre, la description, les mots-clés, la catégorie et l\u2019emplacement (sans tenir compte des accents ni des majuscules).', 'Les 20 derniers éléments classés sur l\u2019accueil.', 'Mes Infos : filtres multicritères (catégories, emplacements, prêt, sensible, photo, son, dates) et tri.', 'Affichage en liste ou en tableau de tes infos ou affaires, et export CSV.', 'La description est lisible directement dans les listes, sauf pour les informations confidentielles.', 'Tableaux de bord : nombre d\u2019éléments, objets prêtés, éléments sans photo, répartition par catégorie et par lieu.'])
+     + bloc('🗂️ Classer', ['Catégories et emplacements organisés en arbre (groupes et sous-groupes), avec une couleur par groupe.', 'Une deuxième catégorie et un deuxième emplacement possibles pour un même élément.', 'Une icône et une photo possibles pour chaque catégorie, emplacement et sous-emplacement : un inconnu retrouve le bon endroit grâce aux photos.', 'Sous-emplacements proposés (armoire, placard, tiroir, étagère) à compléter avec tes propres détails, par exemple Garage › Armoire › Près du frigo.', 'Création à la volée pendant l\u2019ajout, et gestion complète (ajout, renommage, suppression) dans « Catégories & emplacements ».'])
+     + bloc('📝 Documenter', ['Titre, description, mots-clés.', 'Photos et captures d\u2019écran (jusqu\u2019à 12) ajoutées depuis la galerie ou l\u2019ordinateur, envoyées en arrière-plan.', 'Enregistrement sonore ou import d\u2019un fichier son.', 'Date d\u2019achat ou d\u2019inscription, avec l\u2019ancienneté affichée.', 'Icônes sur chaque ligne : 📝 description, 📷 photo, 🎙️ son.'])
+     + bloc('🤝 Prêts', ['Case « Prêté », nom de la personne et date.', 'Bouton « Marquer comme rendu ».', 'Liste des objets actuellement prêtés dans les tableaux de bord.'])
+     + bloc('🔒 Sécurité et confidentialité', ['Informations sensibles masquées par défaut, affichées à la demande, jamais exportées en CSV.', 'Bases personnelles privées, isolées entre les comptes.', 'Droits relus à chaque modification : lecture seule ou modification.', 'Suppression définitive avec confirmation.'])
+     + bloc('👥 Bases et partage', ['Plusieurs bases par personne (perso, famille, association…).', 'Partage par adresse Gmail avec droits « lecture » ou « modification », retrait d\u2019accès à tout moment.', 'Lien d\u2019invitation joint aux e-mails de partage.', 'Quitter une base sans rien supprimer.'])
+     + bloc('🎨 Confort', ['Mode clair ou sombre et trois chartes de couleurs (Azur, Océan, Indigo).', 'Dernières données affichées tout de suite, mises à jour en arrière-plan.', 'Brouillon du formulaire conservé si la page se recharge.', 'Utilisable sur téléphone et sur ordinateur.'])
+     + bloc('🚀 Idées à venir', ['Alertes de fin de garantie ou d\u2019abonnement.', 'Rappel de retour de prêt.', 'Étiquettes QR par emplacement.', 'Remplissage automatique à partir d\u2019une photo.', 'Import CSV, recherche vocale, scan de code-barres.']);
+  } else {
+    h = `<div class="card"><h2>🎓 Tutos</h2><p>Cette rubrique accueillera bientôt de courts tutos pas à pas, avec captures d'écran. Au programme :</p>${li([
+      'Bien démarrer : ajouter son premier élément',
+      'Ajouter des photos et un enregistrement son',
+      'Organiser ses catégories et ses emplacements',
+      'Retrouver un objet avec les filtres',
+      'Prêter et récupérer un objet',
+      'Partager une base avec sa famille, et rejoindre une base partagée',
+      'Protéger une information sensible',
+      'Installer l\u2019application sur l\u2019écran d\u2019accueil du téléphone'])}<p class="meta" style="margin-top:10px">🚧 Bientôt disponible.</p></div>`;
+  }
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">ℹ️ Aide</h2><div class="row" style="flex-wrap:nowrap;margin-bottom:12px">${tab('about', 'À quoi ça sert')}${tab('fonc', 'Fonctionnalités')}${tab('tuto', 'Tutos')}</div>${h}`;
+}
+function go(v) { if (v === 'add') { if (!S.loaded) return toast('Chargement en cours…'); return openForm(); } S.view = v; render(); }
+function render() { try { render_(); } catch (e) { showFatal(msg(e) + ' [affichage]'); } }
+function render_() {
+  applyTheme(); nav();
+  $('#baseLabel').innerHTML = S.base ? `${esc(S.base.nom)}${ro() ? '<span class="badge-ro">lecture seule</span>' : ''}` : '';
+  const v = $('#view');
+  if (!S.loaded && S.view !== 'bases' && S.view !== 'aide') {
+    v.className = '';
+    v.innerHTML = S.error
+      ? `<div class="card"><h2>⚠️ Impossible de charger</h2><p>${esc(S.error)}</p><div class="row"><button class="btn" onclick="retry()">Réessayer</button><button class="btn sec" onclick="go('bases')">Mes bases</button></div></div>`
+      : `<div class="card"><h2>⏳ Chargement de ta base…</h2><p class="meta">La première ouverture peut prendre quelques secondes.</p></div>`;
+    return;
+  }
+  v.className = ['home', 'dash', 'infos'].includes(S.view) ? 'soft' : '';
+  ({ home: vHome, dash: vDash, infos: vInfos, manage: vManage, bases: vBases, aide: vAide })[S.view]();
+  needMinis();
+}
+
+/* ====================================================================
+ * Affichage d'un élément et recherche
+ * ==================================================================== */
+function icones(i) {
+  const x = (t, e) => `<span title="${t}" style="margin-left:6px;font-size:14px;white-space:nowrap">${e}</span>`;
+  return (i.desc ? x('A une description', '📝') : '') + (i.ph.length ? x(i.ph.length + ' photo(s)', '📷' + (i.ph.length > 1 ? '<small>' + i.ph.length + '</small>' : '')) : '') + (i.au ? x('A un enregistrement son', '🎙️') : '');
+}
+function row(i) {
+  const ic = root('T', i.t)?.nom === 'Immatériel' ? '💾' : '🧰';
+  const p = i.ph[0];
+  return `<div class="item" onclick="openDetail('${i.id}')"><div class="thumb" ${p ? `data-ph="${p}"` : ''}>${p && TH[p] ? `<img src="${TH[p]}">` : ic}</div>
+  <div style="flex:1;min-width:0"><b>${esc(i.titre)}</b>${i.sens ? ' 🔒' : ''}${icones(i)}
+  ${!i.sens && i.desc ? `<div class="meta desc">${esc(i.desc)}</div>` : ''}
+  <div>${chip('T', i.t)}${chip('T', i.t2)}${i.pret ? `<span class="tag pret">Prêté à ${esc(i.pa || '?')}</span>` : ''}</div>
+  <div>${chip('E', i.e, '📍 ')}${chip('E', i.e2, '📍 ')}</div></div></div>`;
+}
+function match(i, q) {
+  const terms = norm(q).split(/\s+/).filter(Boolean);
+  let hay = HAY.get(i);
+  if (hay === undefined) { hay = norm([i.titre, i.desc, i.tags, i.pa, path('E', i.e), path('E', i.e2), path('T', i.t), path('T', i.t2)].join(' ')); HAY.set(i, hay); }
+  return terms.every(t => hay.includes(t));
+}
+const recent = (a, b) => (b.dh || b.date).localeCompare(a.dh || a.date);
+
+/* ===== ACCUEIL = recherche ===== */
+function vHome() {
+  const dr = LS.get('dmoc:draft');
+  const ban = dr && dr.F && S.base && dr.base === S.base.id && !ro() ? `<div class="banner"><span>📝 Brouillon non enregistré : <b>${esc(dr.F.titre || '(sans titre)')}</b></span><button class="btn" onclick="resumeDraft()">Reprendre</button><button class="btn sec" onclick="clearDraft();vHome()">Supprimer</button></div>` : '';
+  $('#view').innerHTML = `${ban}<div class="card"><h2>Que cherches-tu ?</h2>
+   <form onsubmit="doSearch(event)"><div class="row"><input id="qs" style="flex:3" placeholder="perceuse, facture, code interphone…" value="${esc(H.q)}" autocomplete="off" enterkeyhint="search">
+   <button class="btn" type="submit">🔍 Rechercher</button></div></form></div><div id="res"></div>`;
+  showRes();
+}
+function doSearch(ev) { ev.preventDefault(); H.q = $('#qs').value.trim(); H.done = !!H.q; showRes(); }
+function showRes() {
+  if (H.done) {
+    const r = items.filter(i => match(i, H.q)).sort(recent);
+    $('#res').innerHTML = `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${r.length} résultat${r.length > 1 ? 's' : ''} pour « ${esc(H.q)} »</h2><button class="btn sec" onclick="H={q:'',done:false};vHome()">Effacer</button></div>${r.map(row).join('') || '<p class="meta">Rien trouvé. Essaie un autre mot, ou va dans « Mes Infos » pour filtrer par catégorie.</p>'}</div>`;
+  } else {
+    const last = [...items].sort(recent).slice(0, 20);
+    $('#res').innerHTML = `<div class="card"><h2>Les 20 derniers éléments classés</h2>${last.map(row).join('') || '<p class="meta">Aucun élément pour l’instant. Touche « ➕ Ajouter » pour commencer.</p>'}</div>`;
+  }
+  needMinis();
+}
+
+/* ===== TABLEAUX DE BORD ===== */
+function vDash() {
+  const pretes = items.filter(i => i.pret), sansPhoto = items.filter(i => !i.ph.length).length;
+  const lvl1 = k => L(k).filter(n => n.p && !N(k, n.p).p);
+  const cnt = (k, n) => items.filter(i => has(k, n.id, i)).length;
+  const byT = lvl1('T').map(n => [n, cnt('T', n)]).filter(x => x[1]).sort((a, b) => b[1] - a[1]);
+  const byE = L('E').filter(n => !n.p).map(n => [n, cnt('E', n)]);
+  const mx = a => Math.max(1, ...a.map(x => x[1]));
+  const bars = (k, a) => a.map(([n, c]) => `<div class="bar"><span style="background:${gcol(k, n.id)}">${esc(n.nom)}</span><i style="width:${c / mx(a) * 50}%"></i><span style="width:auto;padding:0">${c}</span></div>`).join('');
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">📊 Tableaux de bord</h2>
+  <div class="grid" style="margin-bottom:12px">
+   <div class="kpi"><b>${items.length}</b><span>éléments classés</span></div>
+   <div class="kpi" style="cursor:pointer" onclick="M=M0();M.pret='1';go('infos')"><b>${pretes.length}</b><span>objets prêtés</span></div>
+   <div class="kpi"><b>${items.filter(i => i.sens).length}</b><span>infos sensibles 🔒</span></div>
+   <div class="kpi" style="cursor:pointer" onclick="M=M0();M.photo='0';go('infos')"><b>${sansPhoto}</b><span>sans photo</span></div>
+   <div class="kpi"><b>${types.filter(n => n.p).length}</b><span>catégories</span></div>
+   <div class="kpi"><b>${emps.length}</b><span>emplacements</span></div></div>
+  <div class="card"><h2>Par catégorie</h2>${bars('T', byT) || '<p class="meta">Rien à afficher.</p>'}</div>
+  <div class="card"><h2>Par lieu principal</h2>${bars('E', byE)}</div>
+  ${pretes.length ? `<div class="card"><h2>⚠️ Actuellement prêtés</h2>${pretes.map(row).join('')}</div>` : ''}`;
+}
+
+/* ===== MES INFOS = base filtrable ===== */
+function mf() {
+  const m = M, dir = m.dir === 'asc' ? 1 : -1;
+  const key = i => m.sort === 'titre' ? i.titre.toLowerCase() : m.sort === 'achat' ? (i.da || '') : m.sort === 'type' ? path('T', i.t) : m.sort === 'lieu' ? path('E', i.e) : (i.dh || i.date);
+  return items.filter(i => {
+    if (m.q && !match(i, m.q)) return false;
+    if (m.T.size && ![...m.T].some(id => has('T', id, i))) return false;
+    if (m.E.size && ![...m.E].some(id => has('E', id, i))) return false;
+    if (m.pret === '1' && !i.pret || m.pret === '0' && i.pret) return false;
+    if (m.sens === '1' && !i.sens || m.sens === '0' && i.sens) return false;
+    if (m.photo === '1' && !i.ph.length || m.photo === '0' && i.ph.length) return false;
+    if (m.son === '1' && !i.au || m.son === '0' && i.au) return false;
+    if (m.d1 && i.date < m.d1 || m.d2 && i.date > m.d2) return false;
+    if (m.a1 && (!i.da || i.da < m.a1) || m.a2 && (!i.da || i.da > m.a2)) return false;
+    return true;
+  }).sort((a, b) => key(a) > key(b) ? dir : key(a) < key(b) ? -dir : 0);
+}
+const sel3 = (f, lab, yes, no) => `<div><label>${lab}</label><select onchange="M.${f}=this.value;mlist()">${[['', 'Tous'], ['1', yes], ['0', no]].map(([v, l]) => `<option value="${v}" ${M[f] === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>`;
+function chipsFilter(k) {
+  return L(k).filter(n => !n.p).map(r => `<div class="grp" style="background:${gcol(k, r.id)}"><b>${esc(r.nom)}</b><div>${
+    L(k).filter(n => n.p && kids(k, r.id).includes(n.id)).map(n => `<span class="fc ${M[k].has(n.id) ? 'on' : ''}" onclick="tgl(this,'${k}','${n.id}')">${esc(path(k, n.id, true))}</span>`).join('')}</div></div>`).join('');
+}
+function tgl(el, k, id) { const s = M[k]; s.has(id) ? s.delete(id) : s.add(id); el.classList.toggle('on'); mlist(); }
+const nfilt = () => M.T.size + M.E.size + ['q', 'pret', 'sens', 'photo', 'son', 'd1', 'd2', 'a1', 'a2'].filter(f => M[f]).length;
+const fsum = () => '🎚️ Filtres multicritères' + (nfilt() ? ' (' + nfilt() + ' actif' + (nfilt() > 1 ? 's' : '') + ')' : '');
+function vInfos() {
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">🗃️ Mes Infos</h2>
+  <div class="card"><details ${M.fopen ? 'open' : ''} ontoggle="M.fopen=this.open"><summary id="fsum">${fsum()}</summary>
+   <label>Texte</label><input value="${esc(M.q)}" placeholder="mot dans le titre, la description, les mots-clés…" oninput="M.q=this.value;mlist()">
+   <details style="margin-top:6px"><summary>Catégories ${M.T.size ? '(' + M.T.size + ')' : ''}</summary>${chipsFilter('T')}</details>
+   <details style="margin-top:6px"><summary>Emplacements ${M.E.size ? '(' + M.E.size + ')' : ''}</summary>${chipsFilter('E')}</details>
+   <div class="row" style="margin-top:6px">${sel3('pret', 'Prêt', 'Prêtés', 'Non prêtés')}${sel3('sens', 'Sensible 🔒', 'Sensibles', 'Non sensibles')}${sel3('photo', 'Photo', 'Avec photo', 'Sans photo')}${sel3('son', 'Fichier son', 'Avec son', 'Sans son')}</div>
+   <div class="row"><div><label>Modifié du</label><input type="date" value="${M.d1}" onchange="M.d1=this.value;mlist()"></div><div><label>au</label><input type="date" value="${M.d2}" onchange="M.d2=this.value;mlist()"></div>
+    <div><label>Trier par</label><select onchange="M.sort=this.value;mlist()">${[['date', 'Date de modification'], ['achat', "Date d'achat / inscription"], ['titre', 'Titre'], ['type', 'Catégorie'], ['lieu', 'Emplacement']].map(([v, l]) => `<option value="${v}" ${M.sort === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+    <div><label>Ordre</label><select onchange="M.dir=this.value;mlist()"><option value="desc" ${M.dir === 'desc' ? 'selected' : ''}>Décroissant</option><option value="asc" ${M.dir === 'asc' ? 'selected' : ''}>Croissant</option></select></div></div>
+   <div class="row"><div><label>Acheté / inscrit du</label><input type="date" value="${M.a1}" onchange="M.a1=this.value;mlist()"></div><div><label>au</label><input type="date" value="${M.a2}" onchange="M.a2=this.value;mlist()"></div></div>
+   <div class="row" style="margin-top:12px"><button class="btn sec" onclick="M=Object.assign(M0(),{mode:M.mode,fopen:M.fopen});vInfos()">↺ Réinitialiser</button></div></details></div>
+  <div class="card"><div class="meta" id="cnt" style="margin-bottom:8px"></div>
+   <div class="tools"><button class="btn sec" id="mL" onclick="M.mode='list';mlist()">☰ Liste</button> <button class="btn sec" id="mT" onclick="M.mode='table';mlist()">▦ Tableau</button> <button class="btn sec" onclick="exportCsv()">⬇️ CSV</button></div>
+   <div id="lst"></div></div>`;
+  mlist();
+}
+function mlist() {
+  const r = mf(); $('#fsum').textContent = fsum(); $('#cnt').textContent = r.length + ' élément' + (r.length > 1 ? 's' : '') + ' sur ' + items.length;
+  $('#mL').style.outline = M.mode === 'list' ? '2px solid var(--acc)' : 'none'; $('#mT').style.outline = M.mode === 'table' ? '2px solid var(--acc)' : 'none';
+  $('#lst').innerHTML = !r.length ? '<p class="meta">Aucun élément ne correspond à ces filtres.</p>' : M.mode === 'list' ? r.slice(0, 300).map(row).join('') + (r.length > 300 ? `<p class="meta">300 premiers éléments affichés sur ${r.length} : affine les filtres.</p>` : '') :
+   `<div class="tbw"><table class="tb"><thead><tr><th>Titre<th>Description<th>Catégorie<th>Emplacement<th>Prêt<th>Contenu<th>Achat / inscr.<th>Modifié</tr></thead><tbody>${r.slice(0, 500).map(i => `<tr class="r" onclick="openDetail('${i.id}')"><td><b>${esc(i.titre)}</b>${i.sens ? ' 🔒' : ''}<td class="meta" style="min-width:160px">${i.sens ? '' : esc(i.desc.length > 120 ? i.desc.slice(0, 120) + '…' : i.desc)}<td>${chip('T', i.t)}${chip('T', i.t2)}<td>${chip('E', i.e)}${chip('E', i.e2)}<td>${i.pret ? esc(i.pa) : ''}<td>${icones(i)}<td>${fr(i.da)}<td>${esc(i.date)}</tr>`).join('')}</tbody></table></div>`;
+  needMinis();
+}
+function exportCsv() {
+  const q = v => { v = String(v ?? ''); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };   // anti-formules Excel
+  const csv = ['Titre;Catégorie;Catégorie 2;Emplacement;Emplacement 2;Prêté à;Date prêt;Mots-clés;Date achat/inscription;Modifié'].concat(mf().map(i => [i.titre, path('T', i.t, 1), path('T', i.t2, 1), path('E', i.e), path('E', i.e2), i.pa, i.dp, i.tags, i.da, i.date].map(q).join(';'))).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'mes-infos.csv'; a.click(); toast('Export CSV (sans les valeurs sensibles)');
+}
+
+/* ====================================================================
+ * Fiche détail
+ * ==================================================================== */
+function modal(html, sticky) { $('#modalRoot').innerHTML = `<div class="modal" ${sticky ? '' : `onclick="if(event.target===this)closeM()"`}><div class="sheet">${html}</div></div>`; }
+function closeM() { $('#modalRoot').innerHTML = ''; }
+function placeHtml(i) {
+  const l = placeList(i); if (!l.length) return '';
+  return `<div class="meta" style="margin-top:8px">📸 Pour t’aider à trouver l’endroit :</div><div class="photos">${l.map((n, k) => `<div style="width:84px;text-align:center"><div class="slot" data-ph="${n.ph}" onclick="openViewerNodes('${i.id}',${k})">${TH[n.ph] ? `<img src="${TH[n.ph]}">` : '…'}</div><div class="meta" style="font-size:11px;word-break:break-word">${esc(n.nom)}</div></div>`).join('')}</div>`;
+}
+function openDetail(id) {
+  const i = items.find(x => x.id === id); if (!i) return;
+  const sh = S.revealed[id];
+  modal(`<div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2 style="margin:0">${esc(i.titre)}</h2><button class="btn sec" onclick="closeM()">✕</button></div>
+  <div>${chip('T', i.t)}${chip('T', i.t2)}${i.pret ? `<span class="tag pret">Prêté</span>` : ''}</div>
+  <p>${esc(i.desc) || '<span class="meta">Pas de description</span>'}</p>
+  ${i.da ? `<div class="card">📅 Acheté / inscrit le <b>${fr(i.da)}</b> <span class="meta">(${ago(i.da)})</span></div>` : ''}
+  <div class="card">${chip('E', i.e, '📍 ') || '<span class="meta">Sans emplacement</span>'}${chip('E', i.e2, '📍 ')}${placeHtml(i)}</div>
+  ${i.sens ? `<div class="sens"><span>🔒 ${sh ? '<b>' + esc(S.sv[id]) + '</b>' : 'Information masquée'}</span><button class="btn sec" onclick="togSens('${id}')">${sh ? 'Masquer' : 'Afficher'}</button></div>` : ''}
+  ${i.pret ? `<div class="card">🤝 Prêté à <b>${esc(i.pa)}</b> depuis le ${esc(i.dp)}<br><button class="btn sec" style="margin-top:8px" ${ro() ? 'disabled' : ''} onclick="retour('${id}')">Marquer comme rendu</button></div>` : ''}
+  ${i.ph.length ? `<div class="photos">${i.ph.map((p, k) => `<div class="slot" data-ph="${p}" onclick="openViewer('${id}',${k})">${TH[p] ? `<img src="${TH[p]}">` : '…'}</div>`).join('')}</div>` : ''}
+  ${i.au ? `<div class="card"><button class="btn sec" onclick="playSon('${id}')">▶ Écouter le son</button><div id="sonBox" style="margin-top:8px"></div></div>` : ''}
+  <div class="meta">Dernière modification : ${esc(i.date)}${i.par ? ' par ' + esc(i.par) : ''}</div>
+  ${ro() ? '' : `<div class="row" style="margin-top:12px"><button class="btn" onclick="openForm('${id}')">✏️ Modifier</button><button class="btn del" onclick="askDel('${id}')">🗑️ Supprimer</button></div>`}`);
+  fillMinis(); needMinis();
+}
+async function togSens(id) {
+  if (S.revealed[id]) { S.revealed[id] = false; delete S.sv[id]; return openDetail(id); }
+  const v = await act(() => api('lireValeurSensible', S.base.id, id)); if (v === undefined) return;
+  S.sv[id] = v; S.revealed[id] = true; openDetail(id);
+}
+async function playSon(id) {
+  const i = items.find(x => x.id === id); if (!i || !i.au) return;
+  const box = $('#sonBox'); if (box) box.textContent = '⏳ Chargement du son…';
+  const r = await act(() => api('lireSon', S.base.id, i.au));
+  if (!box) return; box.textContent = '';
+  const m = r && /^data:(audio\/[\w.+-]+)(?:;[\w=.+-]+)*;base64,([A-Za-z0-9+\/=]+)$/.exec(r.dataUrl);
+  if (!m) { box.textContent = 'Son indisponible.'; return; }
+  const bin = atob(m[2]), u8 = new Uint8Array(bin.length);
+  for (let k = 0; k < bin.length; k++) u8[k] = bin.charCodeAt(k);
+  const url = URL.createObjectURL(new Blob([u8], { type: m[1] }));
+  const a = document.createElement('audio'); a.controls = true; a.src = url; a.style.width = '100%';
+  a.onerror = () => {
+    const p = document.createElement('div'); p.className = 'meta';
+    p.textContent = 'Ce téléphone ne sait pas lire ce format de son (' + m[1] + ', ' + Math.round(u8.length / 1024) + ' Ko). Tu peux le télécharger et l\u2019ouvrir avec une autre application : ';
+    const l = document.createElement('a'); l.href = url; l.download = 'son-' + id; l.textContent = 'télécharger le son';
+    p.appendChild(l); box.textContent = ''; box.appendChild(p);
+  };
+  box.appendChild(a);
+  a.play().catch(() => { });
+}
+async function retour(id) {
+  const r = await act(() => api('marquerRendu', S.base.id, id));
+  if (r) { upsert(r); toast('Marqué comme rendu'); render(); openDetail(id); }
+}
+function askDel(id) {
+  const i = items.find(x => x.id === id);
+  modal(`<h2>⚠️ Supprimer définitivement ?</h2><p>« <b>${esc(i.titre)}</b> » sera supprimé avec ses photos et son fichier son. <b>Cette action est irréversible.</b></p>
+  <div class="row"><button class="btn sec" onclick="openDetail('${id}')">Annuler</button><button class="btn del" onclick="del('${id}')">Oui, supprimer</button></div>`);
+}
+async function del(id) {
+  const r = await act(() => api('supprimerElement', S.base.id, id));
+  if (r) { items = items.filter(x => x.id !== id); cacheSoon(); closeM(); toast('Élément supprimé'); render(); }
+}
+
+/* ===== Visionneuse de photos (la photo complète est chargée au toucher) ===== */
+const FULL = {};
+let VW = null;
+function openViewer(itemId, k) {
+  const i = items.find(x => x.id === itemId); if (!i) return;
+  VW = { list: i.ph.map(p => ({ id: p, cap: '' })), k };
+  drawViewer();
+}
+function openViewerNodes(itemId, k) {
+  const i = items.find(x => x.id === itemId); if (!i) return;
+  VW = { list: placeList(i).map(n => ({ id: n.ph, cap: n.nom })), k };
+  drawViewer();
+}
+async function drawViewer() {
+  if (!VW) return;
+  const cur = VW.list[VW.k], id = cur.id;
+  $('#viewerRoot').innerHTML = `<div class="viewer"><div id="vwImg" style="color:#fff">⏳ Chargement de la photo…</div>${cur.cap ? `<div style="color:#fff;margin-top:8px"><b>${esc(cur.cap)}</b></div>` : ''}
+   <div class="bar2">${VW.list.length > 1 ? '<button class="btn sec" onclick="vwGo(-1)">‹</button>' : ''}<span>${VW.k + 1} / ${VW.list.length}</span>${VW.list.length > 1 ? '<button class="btn sec" onclick="vwGo(1)">›</button>' : ''}<button class="btn" onclick="closeViewer()">Fermer</button></div></div>`;
+  let u = FULL[id];
+  if (!u) {
+    const r = await act(() => api('lirePhoto', S.base.id, id));
+    if (r && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(r.dataUrl)) { u = r.dataUrl; const ks = Object.keys(FULL); if (ks.length > 8) delete FULL[ks[0]]; FULL[id] = u; }
+  }
+  if (!VW || VW.list[VW.k].id !== id) return;
+  const box = $('#vwImg'); if (!box) return;
+  box.textContent = '';
+  if (u) { const im = new Image(); im.src = u; box.appendChild(im); } else box.textContent = 'Photo indisponible';
+}
+function vwGo(n) { VW.k = (VW.k + n + VW.list.length) % VW.list.length; drawViewer(); }
+function closeViewer() { VW = null; $('#viewerRoot').innerHTML = ''; }
+
+/* ====================================================================
+ * Formulaire d'ajout / modification  (photos et son envoyés en arrière-plan)
+ * ==================================================================== */
+let F = null;
+function openForm(id, brouillon) {
+  if (ro()) return toast('Base en lecture seule');
+  const i = id ? items.find(x => x.id === id) : null;
+  if (brouillon) {
+    const ex = brouillon.editId ? items.find(x => x.id === brouillon.editId) : null;
+    F = { ...brouillon.F, id: ex ? ex.id : uid(), neu: !ex, sv: '', svState: 'ok' };
+    if (ex && F.sens && ex.sens) F.svState = 'loading';
+  } else if (i) {
+    F = { ...JSON.parse(JSON.stringify(i)), neu: false, sv: '', svState: i.sens ? 'loading' : 'ok' };
+  } else {
+    F = { id: uid(), titre: '', desc: '', t: '', t2: '', e: '', e2: '', tags: '', pret: false, pa: '', dp: d(0), sens: false, sv: '', svState: 'ok', da: '', df: '', ph: [], au: null, neu: true };
+  }
+  drawForm();
+  if (F.svState === 'loading') loadSv(F);
+}
+async function loadSv(f) {
+  try {
+    const v = await api('lireValeurSensible', S.base.id, f.id);
+    if (F !== f) return; f.sv = v; f.svState = 'ok';
+    const el = $('#f_sv'); if (el) { el.value = v; el.disabled = false; el.placeholder = ''; }
+  } catch (e) { if (F === f) { f.svState = 'err'; const el = $('#f_sv'); if (el) { el.placeholder = 'Valeur non chargée (elle sera conservée)'; } } }
+}
+const pickBtn = (k, f, ph) => `<button type="button" class="pickbtn" style="background:${F[f] ? gcol(k, F[f]) : 'var(--card)'}" onclick="openPicker('${k}','${f}')">${F[f] && N(k, F[f]) ? esc((icOf(k, F[f]) || (k === 'E' ? '📍' : '')) + ' ' + path(k, F[f], k === 'T')).trim() : '<span class="meta">' + ph + '</span>'}</button>`;
+function drawForm() {
+  modal(`<h2>${F.neu ? 'Nouvel élément' : 'Modifier'}</h2>
+  <label>Titre *</label><input id="f_titre" value="${esc(F.titre)}" maxlength="200" placeholder="Ex. Perceuse, Facture EDF, Code garage…">
+  <label>Description</label><textarea id="f_desc">${esc(F.desc)}</textarea>
+  <div class="row"><div><label>Catégorie principale *</label>${pickBtn('T', 't', 'Choisir ou créer…')}</div><div><label>2ᵉ catégorie (option)</label>${pickBtn('T', 't2', '— aucune —')}</div></div>
+  <div class="row"><div><label>Emplacement principal *</label>${pickBtn('E', 'e', 'Choisir ou créer…')}</div><div><label>2ᵉ emplacement (option)</label>${pickBtn('E', 'e2', '— aucun —')}</div></div>
+  <label>Mots-clés</label><input id="f_tags" value="${esc(F.tags)}" placeholder="séparés par des espaces">
+  <label>📅 Date d'achat ou d'inscription (facultatif)</label><input type="date" id="f_da" value="${esc(F.da || '')}"><div class="meta">Utile pour suivre les garanties et les fins d'abonnement.</div>
+  <div class="chk"><input type="checkbox" id="f_pret" ${F.pret ? 'checked' : ''} onchange="sync();F.pret=this.checked;drawForm()"><label for="f_pret" style="margin:0">🤝 Prêté</label></div>
+  ${F.pret ? `<div class="row"><div><label>Prêté à</label><input id="f_pa" value="${esc(F.pa)}"></div><div><label>Depuis le</label><input type="date" id="f_dp" value="${esc(F.dp)}"></div></div>` : ''}
+  <div class="chk"><input type="checkbox" id="f_sens" ${F.sens ? 'checked' : ''} onchange="sync();F.sens=this.checked;drawForm()"><label for="f_sens" style="margin:0">🔒 Information sensible (masquée par défaut)</label></div>
+  ${F.sens ? `<label>Valeur sensible</label><input id="f_sv" value="${esc(F.sv)}" ${F.svState === 'loading' ? 'disabled placeholder="Chargement…"' : ''} autocomplete="off">` : ''}
+  <label>📷 Photos / captures d'écran <span id="phCount" class="meta"></span></label>
+  <div class="photos" id="phBox"></div>
+  <div class="row">
+   <label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">🖼️ Ajouter des photos (galerie ou ordinateur)<input type="file" accept="image/\x2a" multiple hidden onchange="addPhotos([...this.files]);this.value=''"></label></div>
+  <label>🎙️ Fichier son</label><div id="auBox"></div>
+  <div class="row" style="margin-top:16px"><button class="btn sec" onclick="cancelForm()">Annuler</button><button class="btn" id="saveBtn" onclick="saveForm()">💾 Enregistrer</button></div>`, true);
+  renderPhotos(); renderAudio();
+}
+function sync() { ['titre', 'desc', 'tags', 'da', 'pa', 'dp', 'sv'].forEach(k => { const el = document.getElementById('f_' + k); if (el) F[k] = el.value; }); }
+
+/* --- photos --- */
+const phSrc = p => typeof p === 'string' ? (TH[p] || '') : p.mini;
+function renderPhotos() {
+  const b = $('#phBox'); if (!b || !F) return;
+  b.innerHTML = F.ph.map((p, k) => {
+    const o = typeof p === 'object', src = phSrc(p);
+    return `<div style="position:relative"><div class="slot" ${!o ? `data-ph="${p}"` : ''}>${src ? `<img src="${src}">` : '…'}${o && p.st === 'envoi' ? '<div class="up">⏫ envoi…</div>' : ''}${o && p.st === 'err' ? '<div class="up">⚠️ échec</div>' : ''}</div><button class="mini" style="position:absolute;top:2px;right:2px" onclick="rmPh(${k})">✕</button></div>`;
+  }).join('') || '<span class="meta">Aucune photo</span>';
+  const c = $('#phCount'); if (c) c.textContent = F.ph.length ? `(${F.ph.length}/12)` : '';
+  needMinis();
+}
+function rmPh(k) { sync(); F.ph.splice(k, 1); renderPhotos(); draftSoon(); }
+function compress(file, max, q) {
+  return new Promise((res, rej) => {
+    const r = new FileReader(); r.onerror = rej;
+    r.onload = () => { const im = new Image(); im.onerror = rej;
+      im.onload = () => { const s = Math.min(1, max / Math.max(im.width, im.height)); const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(im.width * s)); c.height = Math.max(1, Math.round(im.height * s)); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', q)); };
+      im.src = r.result; };
+    r.readAsDataURL(file);
+  });
+}
+async function addPhotos(files) {
+  sync();
+  for (const f of files) {
+    if (!F) return;
+    if (F.ph.length >= 12) { toast('12 photos maximum'); break; }
+    try {
+      const [grande, mini] = await Promise.all([compress(f, 900, 0.7), compress(f, 160, 0.6)]);
+      const o = { mini, id: null, st: 'envoi' };
+      F.ph.push(o); renderPhotos();
+      o.p = api('envoyerPhoto', S.base.id, grande, mini)
+        .then(r => { o.id = r.id; o.st = 'ok'; if (okMini(mini)) TH[r.id] = mini; })
+        .catch(e => { o.st = 'err'; o.err = msg(e); toast('Photo non envoyée : ' + o.err, 4500); })
+        .finally(() => { renderPhotos(); saveDraft(); });
+    } catch (e) { toast('Photo illisible'); }
+  }
+}
+
+/* --- son --- */
+function renderAudio() {
+  const b = $('#auBox'); if (!b || !F) return; const a = F.au;
+  b.innerHTML = a
+    ? `<div class="sens"><span>🎙️ ${typeof a === 'string' ? 'Fichier son joint' : esc(a.name) + (a.st === 'envoi' ? ' — envoi…' : a.st === 'err' ? ' — ⚠️ échec' : ' ✔')}</span><button class="btn del" onclick="rmAu()">Retirer</button></div>`
+    : `<div class="row"><label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">🎙️ Enregistrer<input type="file" accept="audio/\x2a" capture hidden onchange="addAudio(this.files[0]);this.value=''"></label>
+       <label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">📁 Importer un fichier son<input type="file" accept="audio/\x2a" hidden onchange="addAudio(this.files[0]);this.value=''"></label></div>
+       <div class="meta">« Enregistrer » ouvre l'enregistreur du téléphone (le micro direct est bloqué dans ce type d'application). 5 Mo maximum.</div>`;
+}
+function rmAu() { sync(); F.au = null; renderAudio(); draftSoon(); }
+function addAudio(f) {
+  if (!f || !F) return; sync();
+  if (f.size > 5 * 1024 * 1024) return toast('Fichier son trop gros (5 Mo maximum)', 3500);
+  const o = { name: f.name || 'enregistrement', st: 'envoi', id: null }; F.au = o; renderAudio();
+  const r = new FileReader();
+  r.onload = () => { o.p = api('envoyerSon', S.base.id, r.result).then(x => { o.id = x.id; o.st = 'ok'; }).catch(e => { o.st = 'err'; toast('Son non envoyé : ' + msg(e), 4500); }).finally(() => { renderAudio(); saveDraft(); }); };
+  r.onerror = () => { o.st = 'err'; renderAudio(); };
+  r.readAsDataURL(f);
+}
+
+/* --- brouillon (reste sur le téléphone ; la valeur sensible n'y est jamais enregistrée) --- */
+let draftT = null;
+function draftSoon() { clearTimeout(draftT); draftT = setTimeout(saveDraft, 600); }
+function saveDraft() {
+  if (!F || !S.base || !$('#f_titre')) return;
+  sync();
+  const ph = F.ph.map(p => typeof p === 'string' ? p : (p.st === 'ok' ? p.id : null)).filter(Boolean);
+  const au = F.au ? (typeof F.au === 'string' ? F.au : (F.au.st === 'ok' ? F.au.id : null)) : null;
+  LS.set('dmoc:draft', { base: S.base.id, editId: F.neu ? null : F.id, t: Date.now(), F: { titre: F.titre, desc: F.desc, t: F.t, t2: F.t2, e: F.e, e2: F.e2, tags: F.tags, pret: F.pret, pa: F.pa, dp: F.dp, sens: F.sens, da: F.da, df: F.df || '', ph, au } });
+}
+function clearDraft() { clearTimeout(draftT); LS.del('dmoc:draft'); }
+function resumeDraft() { const dr = LS.get('dmoc:draft'); if (dr) openForm(null, dr); }
+function cancelForm() { F = null; clearDraft(); closeM(); }
+$('#modalRoot').addEventListener('input', () => { if (F) draftSoon(); });
+$('#modalRoot').addEventListener('change', () => { if (F) draftSoon(); });
+
+async function saveForm() {
+  sync();
+  if (F.saving) return;
+  if (!F.titre.trim()) return toast('Le titre est obligatoire');
+  if (!F.t || !F.e) return toast('Choisis une catégorie et un emplacement');
+  F.saving = true; const btn = $('#saveBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
+  const fin = () => { F.saving = false; const b = $('#saveBtn'); if (b) { b.disabled = false; b.textContent = '💾 Enregistrer'; } };
+  const att = [...F.ph.filter(p => typeof p === 'object').map(p => p.p), F.au && typeof F.au === 'object' ? F.au.p : null].filter(Boolean);
+  if (att.length) await Promise.all(att);
+  if (F.ph.some(p => typeof p === 'object' && p.st !== 'ok') || (F.au && typeof F.au === 'object' && F.au.st !== 'ok')) { fin(); return toast('Une photo ou un son n’a pas été envoyé : retire-le ou réessaie', 4500); }
+  const el = {
+    titre: F.titre, desc: F.desc, t: F.t, t2: F.t2, e: F.e, e2: F.e2, tags: F.tags, pret: F.pret, pa: F.pa, dp: F.dp, sens: F.sens,
+    sv: (F.sens && F.svState === 'ok') ? F.sv : null, da: F.da, df: F.df || '',
+    ph: F.ph.map(p => typeof p === 'string' ? p : p.id), au: F.au ? (typeof F.au === 'string' ? F.au : F.au.id) : ''
+  };
+  if (!F.neu) el.id = F.id;
+  const r = await act(() => api(F.neu ? 'ajouterElement' : 'modifierElement', S.base.id, el));
+  if (!r) return fin();
+  upsert(r); clearDraft(); F = null; closeM(); toast('Enregistré ✔'); render();
+}
+
+/* ===== Sélecteur avec création à la volée ===== */
+let P = null;
+function openPicker(k, f) { sync(); P = { k, f, add: null }; drawPicker(); }
+const TYPES_EMP = ['Armoire', 'Placard', 'Tiroir', 'Étagère'];
+const lbl = n => (n.ic ? esc(n.ic) + ' ' : '') + esc(n.nom) + (n.ph ? ' 📷' : '');
+function suggestOk(k, pid) { const n = pid ? N(k, pid) : null; return k === 'E' && !!n && !!n.p && !TYPES_EMP.map(norm).includes(norm(n.nom)); }
+const sugHtml = id => `<div style="margin:4px 0">${TYPES_EMP.map(t => `<span class="fc" onclick="fillIn('${id}','${t}')">${t}</span>`).join('')}<div class="meta">Ex. : Garage › Armoire › Près du frigo</div></div>`;
+function fillIn(id, v) { const el = document.getElementById(id); if (el) { el.value = v; el.focus(); } }
+function addRow(id) { return P.add === id ? `<div style="margin:6px 0">${suggestOk(P.k, id) ? sugHtml('pn') : ''}<div class="row"><input id="pn" maxlength="80" placeholder="Nom de la nouvelle ${P.k === 'T' ? 'catégorie' : 'entrée'}…" onkeydown="if(event.key==='Enter')pcreate()"><button class="btn" onclick="pcreate()">Créer et choisir</button><button class="btn sec" onclick="P.add=null;drawPicker()">✕</button></div></div>` : ''; }
+function pnodes(id, dp) { return L(P.k).filter(x => x.p === id).map(c => `<div class="pr" style="padding-left:${dp * 14}px"><span class="${F[P.f] === c.id ? 'sel' : ''}" onclick="pick('${c.id}')">${lbl(c)}</span><button class="mini" title="Ajouter une sous-catégorie" onclick="padd('${c.id}')">＋</button></div>${addRow(c.id)}${pnodes(c.id, dp + 1)}`).join(''); }
+function drawPicker() {
+  const k = P.k, roots = L(k).filter(x => !x.p), opt = P.f === 't2' || P.f === 'e2';
+  modal(`<div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2 style="margin:0">${k === 'T' ? 'Choisir une catégorie' : 'Choisir un emplacement'}</h2><button class="btn sec" onclick="drawForm()">← Retour</button></div>
+  <p class="meta">Touche un nom pour le choisir. Le bouton ＋ crée une sous-catégorie (ou un sous-emplacement) à l'endroit voulu.</p>
+  ${opt && F[P.f] ? `<button class="btn del" style="margin-bottom:10px" onclick="pick('')">Retirer ce choix</button>` : ''}
+  ${roots.map(r => `<div class="grp" style="background:${gcol(k, r.id)}"><div class="gh"><b>${lbl(r)}</b><button class="mini" onclick="padd('${r.id}')">＋ Ajouter ici</button></div>${addRow(r.id)}${pnodes(r.id, 0)}</div>`).join('')}
+  <div class="card"><b>Nouveau groupe</b><span class="meta"> (ex. « Voiture », « Jardin »)</span>
+   <div class="row" style="margin-top:6px"><input id="pg" maxlength="80" placeholder="Nom du groupe" onkeydown="if(event.key==='Enter')pgroup()"><button class="btn" onclick="pgroup()">Créer</button></div></div>`, true);
+  if (P.add) setTimeout(() => $('#pn')?.focus(), 50);
+}
+function padd(id) { P.add = id; drawPicker(); }
+function pick(id) { F[P.f] = id; drawForm(); }
+async function pcreate() {
+  const v = $('#pn').value.trim(); if (!v) return;
+  const n = await act(() => api('creerNoeud', S.base.id, P.k, v, P.add || ''));
+  if (!n) return; L(P.k).push(n); cacheSoon(); toast('« ' + v + ' » créé'); pick(n.id);
+}
+async function pgroup() {
+  const v = $('#pg').value.trim(); if (!v) return;
+  const n = await act(() => api('creerNoeud', S.base.id, P.k, v, ''));
+  if (!n) return; L(P.k).push(n); cacheSoon(); P.add = n.id; drawPicker();
+}
+
+/* ====================================================================
+ * Gestion des catégories & emplacements
+ * ==================================================================== */
+let CB = null;
+function nameM(t, init, cb) { CB = cb; modal(`<h2>${t}</h2><input id="nm" maxlength="80" value="${esc(init)}" onkeydown="if(event.key==='Enter')nmOk()"><div class="row" style="margin-top:12px"><button class="btn sec" onclick="closeM()">Annuler</button><button class="btn" onclick="nmOk()">OK</button></div>`); setTimeout(() => $('#nm') && $('#nm').focus(), 50); }
+function nmOk() { const v = $('#nm').value.trim(); if (!v) return; closeM(); CB(v); }
+function vManage() {
+  const dis = ro() ? 'disabled' : '';
+  const btns = (k, id) => `<span style="white-space:nowrap"><button class="mini" ${dis} title="Ajouter dedans" onclick="addNode('${k}','${id}')">＋</button> <button class="mini" ${dis} title="Nom, icône, photo" onclick="editNode('${k}','${id}')">✏️</button> <button class="mini" ${dis} onclick="askDelNode('${k}','${id}')">🗑️</button></span>`;
+  const nom = (k, c, gras) => `<span class="node">${c.ph ? `<span class="thumb" data-ph="${c.ph}">${TH[c.ph] ? `<img src="${TH[c.ph]}">` : '…'}</span>` : ''}<span style="cursor:default;min-width:0">${c.ic ? esc(c.ic) + ' ' : ''}${gras ? '<b>' + esc(c.nom) + '</b>' : esc(c.nom) + ' <small class="meta">(' + items.filter(i => has(k, c.id, i)).length + ')</small>'}</span></span>`;
+  const rows = (k, id, dp) => L(k).filter(x => x.p === id).map(c => `<div class="pr" style="padding-left:${dp * 14}px">${nom(k, c, false)}${btns(k, c.id)}</div>${rows(k, c.id, dp + 1)}`).join('');
+  const tree = (k, title) => `<div class="card"><h2>${title}</h2>${L(k).filter(x => !x.p).map(r => `<div class="grp" style="background:${gcol(k, r.id)}"><div class="gh">${nom(k, r, true)}${btns(k, r.id)}</div>${rows(k, r.id, 0)}</div>`).join('')}<div class="row"><button class="btn" ${dis} onclick="addNode('${k}','')">＋ Nouveau groupe</button><button class="btn sec" ${dis} onclick="suggereIcones('${k}')">✨ Suggérer des icônes</button></div></div>`;
+  $('#view').innerHTML = `<h2 style="margin:0 0 6px">🗂️ Catégories & emplacements</h2><p class="meta" style="margin:0 0 12px">Ajoute, modifie ou supprime ici tes catégories et tes emplacements. Avec ✏️, tu peux changer le nom, choisir une icône et ajouter une photo : pour un emplacement, la photo aide quelqu’un qui ne connaît pas les lieux à trouver le bon endroit. Tu peux aussi créer des entrées directement en ajoutant un élément.</p>${tree('T', 'Catégories')}${tree('E', 'Emplacements')}`;
+  needMinis();
+}
+function addNode(k, pid) {
+  const par = pid ? N(k, pid) : null;
+  CB = async v => { const n = await act(() => api('creerNoeud', S.base.id, k, v, pid)); if (n) { L(k).push(n); cacheSoon(); vManage(); } };
+  modal(`<h2>${par ? 'Ajouter dans « ' + esc(par.nom) + ' »' : 'Nouveau groupe'}</h2>${suggestOk(k, pid) ? sugHtml('nm') : (k === 'E' && par ? '<div class="meta">Ex. : Garage › Armoire › Près du frigo</div>' : '')}<input id="nm" maxlength="80" placeholder="Nom" onkeydown="if(event.key==='Enter')nmOk()"><div class="row" style="margin-top:12px"><button class="btn sec" onclick="closeM()">Annuler</button><button class="btn" onclick="nmOk()">OK</button></div>`);
+  setTimeout(() => $('#nm') && $('#nm').focus(), 50);
+}
+const ICONES = ['🏠', '🛋️', '🍳', '🛏️', '🛁', '🚗', '🚪', '🗄️', '🗃️', '📚', '📦', '🧰', '🔧', '🔨', '💡', '🔌', '🌿', '🧸', '👕', '🧾', '📄', '📑', '📁', '🗂️', '💾', '💻', '📱', '📸', '🎞️', '🎵', '✈️', '🏦', '🛡️', '🔑', '📶', '🔁', '☁️', '⭐', '❤️', 'ℹ️'];
+const MOTS_ICONES = [['outil', '🔧'], ['bricol', '🔨'], ['voiture', '🚗'], ['auto', '🚗'], ['facture', '🧾'], ['papier', '📄'], ['contrat', '📑'], ['assurance', '🛡️'], ['banque', '🏦'], ['photo', '📸'], ['evenement', '📅'], ['fichier', '🗂️'], ['idee', '💡'], ['info', 'ℹ️'], ['physique', '🧰'], ['immateriel', '💾'], ['voyage', '✈️'], ['jardin', '🌿'], ['cuisine', '🍳'], ['salon', '🛋️'], ['chambre', '🛏️'], ['sdb', '🛁'], ['garage', '🚗'], ['cellier', '📦'], ['sous-sol', '📦'], ['dressing', '👕'], ['maison', '🏠'], ['ordinateur', '💻'], ['smartphone', '📱'], ['video', '🎞️'], ['musique', '🎵'], ['telechargement', '⬇️'], ['armoire', '🗄️'], ['placard', '🚪'], ['tiroir', '🗃️'], ['etagere', '📚'], ['cloud', '☁️'], ['drive', '☁️'], ['wifi', '📶'], ['abonnement', '🔁'], ['autre', '📦']];
+async function suggereIcones(k) {
+  const map = {};
+  L(k).forEach(n => { if (n.ic) return; const m = MOTS_ICONES.find(x => norm(n.nom).includes(x[0])); if (m) map[n.id] = m[1]; });
+  if (!Object.keys(map).length) return toast('Rien à suggérer : toutes les entrées reconnues ont déjà une icône', 3500);
+  const r = await act(() => api('definirIcones', S.base.id, k, map)); if (!r) return;
+  Object.keys(map).forEach(id => { N(k, id).ic = map[id]; });
+  cacheSoon(); toast(r.modifies + ' icône(s) ajoutée(s) : modifie-les avec ✏️', 3500); vManage();
+}
+let EN = null;
+function editNode(k, id) { const n = N(k, id); EN = { k, id, nom: n.nom, ic: n.ic || '', ph: n.ph || '', nouv: null, retire: false }; drawEdit(); }
+function drawEdit() {
+  const e = EN, src = e.nouv ? e.nouv.mini : (!e.retire && e.ph ? TH[e.ph] : ''), a = !!(e.nouv || (!e.retire && e.ph));
+  modal(`<h2>Modifier « ${esc(N(e.k, e.id).nom)} »</h2>
+  <label>Nom</label><input id="en_nom" maxlength="80" value="${esc(e.nom)}" oninput="EN.nom=this.value">
+  <label>Icône</label><div class="row" style="flex-wrap:nowrap"><input id="en_ic" maxlength="8" value="${esc(e.ic)}" style="max-width:90px;font-size:22px;text-align:center" oninput="EN.ic=this.value"><span class="meta">Choisis ci-dessous ou colle un emoji</span></div>
+  <div style="margin-top:6px">${ICONES.map(x => `<span class="fc" style="font-size:20px" onclick="pickIc('${x}')">${x}</span>`).join('')}<span class="fc" onclick="pickIc('')">aucune</span></div>
+  <label>Photo (pour aider à reconnaître l’endroit)</label>
+  <div class="photos">${a ? `<div class="slot" ${e.nouv ? '' : `data-ph="${e.ph}"`}>${src ? `<img src="${src}">` : '…'}${e.nouv && e.nouv.st === 'envoi' ? '<div class="up">⏫ envoi…</div>' : ''}${e.nouv && e.nouv.st === 'err' ? '<div class="up">⚠️ échec</div>' : ''}</div>` : '<span class="meta">Aucune photo</span>'}</div>
+  <div class="row"><label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">🖼️ ${a ? 'Changer' : 'Ajouter'} la photo<input type="file" accept="image/\x2a" hidden onchange="enPhoto(this.files[0]);this.value=''"></label>${a ? '<button class="btn del" onclick="enRetirer()">Retirer la photo</button>' : ''}</div>
+  <div class="row" style="margin-top:16px"><button class="btn sec" onclick="EN=null;closeM()">Annuler</button><button class="btn" id="enSave" onclick="enSave()">💾 Enregistrer</button></div>`, true);
+  needMinis();
+}
+function pickIc(v) { EN.nom = $('#en_nom').value; EN.ic = v; drawEdit(); }
+function enRetirer() { EN.nom = $('#en_nom').value; EN.ic = $('#en_ic').value; EN.nouv = null; EN.retire = true; drawEdit(); }
+async function enPhoto(f) {
+  if (!f || !EN) return;
+  const e = EN; e.nom = $('#en_nom').value; e.ic = $('#en_ic').value;
+  try {
+    const [grande, mini] = await Promise.all([compress(f, 900, 0.7), compress(f, 160, 0.6)]);
+    const o = { mini, id: null, st: 'envoi' }; e.nouv = o; e.retire = false; drawEdit();
+    o.p = api('envoyerPhoto', S.base.id, grande, mini).then(r => { o.id = r.id; o.st = 'ok'; }).catch(x => { o.st = 'err'; toast('Photo non envoyée : ' + msg(x), 4500); }).finally(() => { if (EN === e) drawEdit(); });
+  } catch (x) { toast('Photo illisible'); }
+}
+async function enSave() {
+  const e = EN; if (!e || e.saving) return;
+  e.nom = $('#en_nom').value.trim(); e.ic = $('#en_ic').value.trim();
+  if (!e.nom) return toast('Le nom est obligatoire');
+  if (e.nouv && e.nouv.p) await e.nouv.p;
+  if (e.nouv && e.nouv.st !== 'ok') return toast('La photo n’a pas été envoyée : réessaie ou retire-la', 4000);
+  e.saving = true; const btn = $('#enSave'); if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
+  const fin = () => { e.saving = false; const b = $('#enSave'); if (b) { b.disabled = false; b.textContent = '💾 Enregistrer'; } };
+  const n = N(e.k, e.id); let r;
+  if (e.nom !== n.nom) { r = await act(() => api('renommerNoeud', S.base.id, e.k, e.id, e.nom)); if (!r) return fin(); n.nom = r.nom; }
+  const ch = {};
+  if (e.ic !== (n.ic || '')) ch.icone = e.ic;
+  if (e.nouv) ch.photo = e.nouv.id; else if (e.retire) ch.photo = '';
+  if (Object.keys(ch).length) {
+    r = await act(() => api('definirNoeud', S.base.id, e.k, e.id, ch)); if (!r) return fin();
+    n.ic = r.ic; n.ph = r.ph; if (e.nouv && okMini(e.nouv.mini)) TH[r.ph] = e.nouv.mini;
+  }
+  HAY = new WeakMap(); cacheSoon(); EN = null; closeM(); toast('Enregistré ✔'); render();
+}
+function askDelNode(k, id) {
+  const ks = kids(k, id), n = items.filter(i => has(k, id, i)).length;
+  modal(`<h2>⚠️ Supprimer « ${esc(N(k, id).nom)} » ?</h2><p>${ks.length > 1 ? `Ses ${ks.length - 1} sous-entrée(s) seront supprimées aussi. ` : ''}${n ? `<b>${n} élément(s)</b> sont concernés : ils perdront ce classement (ils ne sont pas supprimés). ` : ''}<b>Suppression définitive.</b></p>
+  <div class="row"><button class="btn sec" onclick="closeM()">Annuler</button><button class="btn del" onclick="delNode('${k}','${id}')">Supprimer</button></div>`);
+}
+async function delNode(k, id) {
+  const r = await act(() => api('supprimerNoeud', S.base.id, k, id));
+  closeM(); if (!r) return;
+  M.T = new Set(); M.E = new Set();
+  toast(r.declasses ? `${r.declasses} élément(s) déclassé(s)` : 'Supprimé');
+  await recharger(true);
+}
+
+/* ====================================================================
+ * Bases et partage
+ * ==================================================================== */
+function vBases() {
+  const act1 = b => b.role === 'propriétaire' ? `<button class="btn sec" style="flex:none" onclick="event.stopPropagation();shareM('${b.id}')">Partager</button>` : `<button class="btn del" style="flex:none" onclick="event.stopPropagation();askForget('${b.id}')">${b.role ? 'Quitter' : 'Retirer'}</button>`;
+  $('#view').innerHTML = `<div class="card"><h2>Mes bases de données</h2>
+  ${S.bases.map(b => `<div class="item" onclick="switchBase('${b.id}')">
+   <div class="thumb">${b.partage ? '👨‍👩‍👧' : '🔐'}</div><div style="flex:1;min-width:0"><b>${esc(b.nom)}</b> ${S.base && S.base.id === b.id ? '✅' : ''}
+   <div class="meta">${b.erreur ? '⚠️ ' + esc(b.erreur) : (b.role === 'propriétaire' ? (b.partage ? 'Partagée' : 'Privée — personne d’autre n’y a accès') : 'Base partagée avec toi') + ' · rôle : ' + esc(b.role)}</div></div>${act1(b)}</div>`).join('') || '<p class="meta">Aucune base.</p>'}
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="newBase()">➕ Créer une base</button><button class="btn sec" onclick="joinM()">🔗 Rejoindre une base</button></div></div>
+  <div class="card meta">Connecté en tant que <b>${esc(S.email)}</b>.<br><button class="btn sec" style="margin:6px 0" onclick="resetLocal()">♻️ Effacer les données gardées sur ce téléphone</button><br>Pour inviter quelqu'un : « Partager » (adresse Gmail + droits), puis envoie-lui le lien d'invitation.${S.base && S.base.role === 'propriétaire' ? `<br><br><button class="btn sec" onclick="cleanMedias()">🧹 Nettoyer les fichiers inutilisés de « ${esc(S.base.nom)} »</button>` : ''}</div>`;
+}
+async function retry() { S.error = ''; S.loaded = false; render(); try { setBase(await api('chargerBase', S.base ? S.base.id : (LS.get('dmoc:prefs') || {}).baseActive)); } catch (e) { S.error = msg(e); render(); } }
+async function switchBase(id) {
+  if (S.base && S.base.id === id && S.loaded) { S.view = 'home'; return render(); }
+  const b = S.bases.find(x => x.id === id); if (!b || !b.role) return toast('Cette base est inaccessible');
+  S.loaded = false; S.error = ''; S.base = { id, nom: b.nom, role: b.role }; S.view = 'home'; M = M0(); H = { q: '', done: false }; S.revealed = {}; S.sv = {};
+  const c = LS.get('dmoc:b:' + id); if (c) { applyData(c); S.loaded = true; }
+  render();
+  try { setBase(await api('chargerBase', id)); } catch (e) { if (!S.loaded) { S.error = msg(e); render(); } else toast('Hors connexion : données du téléphone', 3500); }
+}
+async function recharger(silencieux) {
+  if (!S.base) return;
+  try { const dt = await api('chargerBase', S.base.id); const open = $('#modalRoot').innerHTML; setBase(dt); if (!silencieux) toast('À jour ✔'); void open; }
+  catch (e) { if (!silencieux) toast(msg(e), 3500); }
+}
+function newBase() { nameM('Nom de la nouvelle base', '', async v => { const b = await act(() => api('creerBase', v)); if (b) { S.bases.push(b); toast('Base créée'); switchBase(b.id); } }); }
+function joinM() {
+  modal(`<h2>Rejoindre une base</h2><p class="meta">Colle ici le lien d'invitation reçu. Il faut que la personne ait d'abord partagé la base avec ton adresse Gmail.</p><input id="jl" placeholder="Colle ici le lien reçu">
+  <div class="row" style="margin-top:12px"><button class="btn sec" onclick="closeM()">Annuler</button><button class="btn" onclick="joinOk()">Rejoindre</button></div>`);
+}
+async function joinOk() {
+  const v = $('#jl').value.trim(); if (!v) return;
+  const b = await act(() => api('rejoindreBase', v)); if (!b) return;
+  closeM(); const k = S.bases.findIndex(x => x.id === b.id); if (k >= 0) S.bases[k] = b; else S.bases.push(b);
+  toast('Base ajoutée'); switchBase(b.id);
+}
+function askForget(id) {
+  const b = S.bases.find(x => x.id === id);
+  modal(`<h2>Retirer « ${esc(b.nom)} » de ta liste ?</h2><p>Rien n'est supprimé dans Drive : tu pourras la rejoindre de nouveau avec le lien d'invitation si le propriétaire t'a toujours donné accès.</p>
+  <div class="row"><button class="btn sec" onclick="closeM()">Annuler</button><button class="btn del" onclick="forget('${id}')">Retirer</button></div>`);
+}
+async function forget(id) {
+  const r = await act(() => api('oublierBase', id)); closeM(); if (!r) return;
+  S.bases = S.bases.filter(b => b.id !== id); LS.del('dmoc:b:' + id);
+  if (S.base && S.base.id === id) { const n = S.bases.find(b => b.role); S.base = null; S.loaded = false; if (n) return switchBase(n.id); }
+  render();
+}
+async function cleanMedias() {
+  const r = await act(() => api('nettoyerMedias', S.base.id)); if (r) toast(r.corbeille ? r.corbeille + ' fichier(s) inutilisé(s) mis à la corbeille' : 'Rien à nettoyer');
+}
+let SH = null;
+async function shareM(id) {
+  const b = S.bases.find(x => x.id === id); SH = { id, mem: [], lien: '' };
+  modal(`<h2>Partager « ${esc(b.nom)} »</h2><div id="shBody"><p class="meta">Chargement…</p></div>`);
+  const mem = await act(() => api('listerMembres', id)); if (mem === undefined) return closeM();
+  SH.mem = mem; drawShare();
+}
+function drawShare() {
+  const b = $('#shBody'); if (!b || !SH) return;
+  b.innerHTML = `${SH.mem.length ? SH.mem.map((m, k) => `<div class="item" style="cursor:default"><div style="flex:1;min-width:0"><b>${esc(m.email)}</b><div class="meta">${esc(m.role)}</div></div><button class="btn del" onclick="retirer(${k})">Retirer</button></div>`).join('') : '<p class="meta">Personne d’autre n’a accès à cette base.</p>'}
+  <label>Adresse Gmail de la personne</label><input id="sm" type="email" placeholder="prenom@gmail.com" autocomplete="off">
+  <label>Droits</label><select id="sr"><option value="modification">modification (peut ajouter et modifier)</option><option value="lecture">lecture seule</option></select>
+  <div class="row" style="margin-top:12px"><button class="btn sec" onclick="closeM()">Fermer</button><button class="btn" onclick="doShare()">Partager</button></div>
+  <div class="meta" style="margin-top:8px">Google envoie un e-mail à la personne. Elle doit ensuite ouvrir le lien d'invitation avec ce même compte Gmail.</div>
+  <div class="card" style="margin-top:12px"><b>🔗 Lien d'invitation</b>${SH.lien ? `<div class="linkbox">${esc(SH.lien)}</div><div class="row"><button class="btn sec" onclick="copyLink()">Copier</button><button class="btn sec" onclick="shareLink()">Envoyer…</button></div>` : `<div><button class="btn sec" style="margin-top:6px" onclick="showLink()">Afficher le lien</button></div>`}</div>`;
+}
+async function doShare() {
+  const m = $('#sm').value.trim(); if (!m.includes('@')) return toast('E-mail invalide');
+  const r = await act(() => api('partagerBase', SH.id, m, $('#sr').value)); if (!r) return;
+  toast(r.mailPerso ? 'Partagé avec ' + r.email + ' : e-mail envoyé avec le lien et les explications' : 'Partagé avec ' + r.email + ' : envoie-lui aussi le lien d\u2019invitation ci-dessous', 5000);
+  const b = S.bases.find(x => x.id === SH.id); if (b) b.partage = true;
+  const mem = await act(() => api('listerMembres', SH.id)); if (mem) SH.mem = mem;
+  await showLink();
+}
+async function retirer(k) {
+  const m = SH.mem[k]; if (!m) return;
+  const r = await act(() => api('retirerMembre', SH.id, m.email)); if (!r) return;
+  SH.mem.splice(k, 1); const b = S.bases.find(x => x.id === SH.id); if (b) b.partage = SH.mem.length > 0; toast('Accès retiré'); drawShare();
+}
+async function showLink() { const l = await act(() => api('lienInvitation', SH.id)); if (l) { SH.lien = l; drawShare(); } }
+function copyLink() {
+  const l = SH.lien;
+  const fin = ok => toast(ok ? 'Lien copié ✔' : 'Copie impossible : appuie longuement sur le lien pour le copier', 3500);
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(l).then(() => fin(true), () => fin(false)); else fin(false);
+}
+function shareLink() {
+  const l = SH.lien;
+  if (navigator.share) navigator.share({ title: "Dis moi où c'est !", text: 'Voici le lien pour rejoindre ma base :', url: l }).catch(() => { });
+  else copyLink();
+}
+
+/* ====================================================================
+ * Démarrage
+ * ==================================================================== */
+async function start() {
+  applyTheme(); render();
+  const lp = LS.get('dmoc:prefs') || {}; const pre = okId(lp.baseActive) ? lp.baseActive : '';
+  if (pre && !INVITE) {                                   // affichage immédiat avec les dernières données connues
+    const c = LS.get('dmoc:b:' + pre);
+    if (c && c.base) { applyData(c); S.base = c.base; S.loaded = true; render(); autoDraft(); }
+  }
+  const pData = pre && !INVITE ? api('chargerBase', pre).catch(() => null) : null;   // en parallèle de « démarrer »
+  let dm;
+  try { dm = await api('demarrer', INVITE); }
+  catch (e) { if (S.loaded) { toast('Hors connexion : données du téléphone', 4000); return; } S.error = msg(e); render(); return; }
+  S.email = dm.email; S.bases = dm.bases;
+  if (dm.prefs) { if (dm.prefs.theme) S.theme = dm.prefs.theme; if (dm.prefs.charte) S.charte = dm.prefs.charte; LS.set('dmoc:prefs', { theme: S.theme, charte: S.charte, baseActive: dm.baseActive }); applyTheme(); }
+  if (dm.message) toast(dm.message, 5000);
+  if (!dm.baseActive) { S.view = 'bases'; S.loaded = false; render(); return; }
+  let dt = null;
+  if (pData && dm.baseActive === pre) dt = await pData;
+  if (!dt) { try { dt = await api('chargerBase', dm.baseActive); } catch (e) { if (!S.loaded) { S.error = msg(e); S.base = { id: dm.baseActive, nom: '', role: '' }; render(); } return; } }
+  setBase(dt);
+  autoDraft();
+}
+/* Après un rechargement (typique au retour de l'appareil photo sous Android) : on rouvre le formulaire en cours */
+function autoDraft() {
+  const dr = LS.get('dmoc:draft');
+  if (dr && S.base && dr.base === S.base.id && !ro() && dr.F && Date.now() - dr.t < 15 * 60 * 1000) { openForm(null, dr); toast('Brouillon repris — la photo prise n’a pas pu être récupérée, ajoute-la de nouveau', 6000); }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { saveDraft(); return; }
+  if (S.loaded && Date.now() - S.tLoad > 120000 && !$('#modalRoot').innerHTML && !$('#viewerRoot').innerHTML) recharger(true);
+});
+start();
+</script>
+</body>
+</html>

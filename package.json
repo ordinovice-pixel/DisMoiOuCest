@@ -1,0 +1,15 @@
+{
+  "name": "dis-moi-ou-c-est",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dis moi où c'est ! — application Google Apps Script pour retrouver ses affaires, infos et idées",
+  "scripts": {
+    "test": "node test/scenarios.js",
+    "test:ui": "node test/ui.js",
+    "push": "clasp push",
+    "deploy": "clasp deploy"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}
