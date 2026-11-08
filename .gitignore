@@ -1,0 +1,4 @@
+node_modules/
+test/shots/
+.clasp.json
+.DS_Store
