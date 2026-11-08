@@ -6,29 +6,39 @@
 <base target="_top">
 <title>Dis moi où c'est !</title>
 <style>
-:root{--bg:#eef4fb;--card:#fff;--ink:#0f2740;--mute:#5b7390;--line:#d3e0ef;--acc:#1f6fd1;--acc2:#e3effc;--acc-ink:#fff;--warn:#c2410c;--r:14px;
- --g0:#d6e6fb;--g1:#fddede;--g2:#d9f3e2;--g3:#fdf0c9;--soft:#e0ebf8;--field:#d2e2f6}
-:root[data-theme=dark]{--bg:#0c1624;--card:#142238;--ink:#e6eefa;--mute:#93a9c4;--line:#243a58;--acc:#5aa3ff;--acc2:#1b3252;--acc-ink:#06121f;--warn:#fb923c;
- --g0:#1b3252;--g1:#4a2326;--g2:#1d3d2b;--g3:#4a3f1a;--soft:#172a45;--field:#1f375a}
-/* Charte B — Océan */
-:root[data-charte=ocean]{--acc:#0e7c86;--acc2:#dff3f4;--bg:#edf6f7;--g0:#cfeef0;--g1:#fddccf;--g2:#f3ebcf;--g3:#e3dff7;--soft:#d9eef0;--field:#c6e6e9}
-:root[data-charte=ocean][data-theme=dark]{--acc:#4fd1d9;--acc2:#12363a;--bg:#0a1a1d;--card:#10272b;--line:#1f4247;--g0:#12363a;--g1:#47281f;--g2:#3d3721;--g3:#2a2650;--soft:#112d31;--field:#183d43}
-/* Charte C — Indigo */
-:root[data-charte=indigo]{--acc:#4338ca;--acc2:#e6e4fb;--bg:#eff0fb;--g0:#e0defb;--g1:#fddeea;--g2:#d8f1e7;--g3:#fdebd1;--soft:#e3e4fa;--field:#d3d5f6}
-:root[data-charte=indigo][data-theme=dark]{--acc:#9a93ff;--acc2:#25235a;--bg:#0f0f24;--card:#18183a;--line:#2e2e60;--g0:#25235a;--g1:#4d2140;--g2:#1f4234;--g3:#4a3320;--soft:#1d1d45;--field:#29295c}
+:root{--bg:#f6f9f9;--card:#ffffff;--ink:#0e2a2d;--mute:#52696c;--line:#dde7e8;--acc:#0e7c86;--acc2:#e2f2f3;--acc-ink:#ffffff;--warn:#a33f08;--r:14px;
+ --g0:#e2f2f3;--g1:#fbe9de;--g2:#e6efe9;--g3:#ece9f6;--soft:#eef5f5;--field:#e4eeef;--pret-bg:#fdebdd;--pret-ink:#a33f08}
+:root[data-theme=dark]{--bg:#0a1a1d;--card:#10272b;--ink:#e4f1f2;--mute:#8faaad;--line:#1f4247;--acc:#4fd1d9;--acc2:#12363a;--acc-ink:#0a1a1d;--warn:#f4a261;
+ --g0:#12363a;--g1:#47281f;--g2:#1c3a30;--g3:#2a2650;--soft:#112d31;--field:#183d43;--pret-bg:#43230f;--pret-ink:#f4a261}
+/* Charte Azur */
+:root[data-charte=azur]{--bg:#f7f9fc;--ink:#0f2740;--mute:#4f6682;--line:#d9e2ec;--acc:#1f6fd1;--acc2:#e8f1fc;--g0:#e8f1fc;--g1:#fbe9e9;--g2:#e4f3ea;--g3:#fbf1d8;--soft:#edf3fa;--field:#e1eaf5}
+:root[data-charte=azur][data-theme=dark]{--bg:#0c1624;--card:#142238;--ink:#e6eefa;--mute:#93a9c4;--line:#243a58;--acc:#5aa3ff;--acc2:#1b3252;--acc-ink:#0c1624;--g0:#1b3252;--g1:#4a2326;--g2:#1d3d2b;--g3:#4a3f1a;--soft:#172a45;--field:#1f375a}
+/* Charte Indigo */
+:root[data-charte=indigo]{--bg:#f7f7fd;--ink:#17163a;--mute:#5e5c82;--line:#e4e3f4;--acc:#4338ca;--acc2:#ecebfb;--g0:#ecebfb;--g1:#fbe9f0;--g2:#e3f2ea;--g3:#fdefd9;--soft:#eeeefa;--field:#e4e5f6}
+:root[data-charte=indigo][data-theme=dark]{--bg:#0f0f24;--card:#18183a;--ink:#e9e8fa;--mute:#a29fc9;--line:#2e2e60;--acc:#9a93ff;--acc2:#25235a;--acc-ink:#0f0f24;--g0:#25235a;--g1:#4d2140;--g2:#1f4234;--g3:#4a3320;--soft:#1d1d45;--field:#29295c}
 *{box-sizing:border-box}
+body{overflow-wrap:anywhere}
+p,li,.desc,.meta{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.item .meta:not(.desc),.tb .meta,.kpi span,.bar,.base,.toast,.thumb,.gh .meta,.node .meta{text-align:left;hyphens:manual}
+.tb th,.tb td{overflow-wrap:normal}
+.node>span:last-child,.pr>span,.gh>.node{min-width:0}
 body{margin:0;font:16px/1.4 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:88px}
 body.busy::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,transparent,var(--acc),transparent);background-size:50% 100%;background-repeat:no-repeat;animation:bz 1s linear infinite}
 @keyframes bz{from{background-position:-50% 0}to{background-position:150% 0}}
-header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;display:flex;align-items:center;gap:8px}
-header h1{font-size:17px;margin:0;flex:1;line-height:1.15;min-width:0}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 10px;display:flex;align-items:center;gap:6px}
+header h1{font-size:15.5px;white-space:nowrap;font-weight:800;letter-spacing:-.02em;margin:0;flex:1;line-height:1.1;min-width:0;display:flex;align-items:center;gap:8px}
+header h1 svg{width:28px;height:28px;flex:none}
+header h1 .nm{min-width:0;overflow:hidden}
+header h1 .o{color:var(--acc)}
 header .base{font-size:12px;color:var(--mute);display:block;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sw{width:26px;height:26px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px var(--line);padding:0;cursor:pointer;flex:none}
 .sw.on{box-shadow:0 0 0 2px var(--ink)}
+@media(max-width:400px){header h1{font-size:14px;gap:6px}header h1 svg{width:24px;height:24px}.sw{width:22px;height:22px}header .btn{padding:6px 8px!important}}
 main{max-width:960px;margin:0 auto;padding:16px}
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:5}
 nav button{flex:1;border:0;background:none;color:var(--mute);padding:6px 0;font-size:9.5px;min-width:0;cursor:pointer;line-height:1.1}
-nav button b{display:block;font-size:18px}
+nav button b{display:grid;place-items:center;height:24px;margin-bottom:2px}
+nav button .ic{width:22px;height:22px}
 nav button.on{color:var(--acc);font-weight:700}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
@@ -53,8 +63,18 @@ label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
 .thumb img{width:100%;height:100%;object-fit:cover}
 .meta{font-size:13px;color:var(--mute)}
 .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;margin:2px 4px 2px 0}
-.tag.pret{background:#fde9d9;color:var(--warn)}
-:root[data-theme=dark] .tag.pret{background:#43230f}
+.tag.pret{background:var(--pret-bg);color:var(--pret-ink)}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.sm{width:16px;height:16px;stroke-width:2;vertical-align:-3px}
+.ic.lg{width:32px;height:32px}
+.thumb{color:var(--acc)}
+.empty{text-align:center;padding:22px 12px;color:var(--mute)}
+.empty .ic{width:44px;height:44px;color:var(--acc);margin-bottom:6px}
+.empty p{margin:4px 0;text-align:center}
+.tuto{border-top:1px solid var(--line);padding:2px 0}
+.tuto summary{padding:10px 0;font-weight:600}
+.tuto ol{margin:0 0 6px;padding-left:22px}.tuto li{margin:6px 0}
+.astuce{background:var(--acc2);border-radius:10px;padding:8px 12px;margin:8px 0 10px;font-size:14px}
 .modal{position:fixed;inset:0;background:#0009;z-index:20;display:flex;align-items:flex-end;justify-content:center}
 .sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px}
 @media(min-width:700px){.modal{align-items:center}.sheet{border-radius:20px}}
@@ -97,15 +117,45 @@ main.soft .fc{background:var(--field)}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+ <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5M10 20v-5h4v5"/></symbol>
+ <symbol id="i-dash" viewBox="0 0 24 24"><path d="M5 20v-9M12 20V5M19 20v-7"/></symbol>
+ <symbol id="i-infos" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 12h16M10 15.5h4"/></symbol>
+ <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l8 4-8 4-8-4zM4 12l8 4 8-4M4 16l8 4 8-4"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5M16 5.2a3 3 0 0 1 0 5.6M17.5 14.2c1.7.6 2.7 2.3 3 4.8"/></symbol>
+ <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.4 2.2c-.7.4-1.1.9-1.1 1.7M12 16.8v.1"/></symbol>
+ <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+ <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9.5 13h6M9.5 17h6"/></symbol>
+ <symbol id="i-photo" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/></symbol>
+ <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 4a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V7a3 3 0 0 0-3-3zM6 11.5a6 6 0 0 0 12 0M12 17.5V21"/></symbol>
+ <symbol id="i-lock" viewBox="0 0 24 24"><path d="M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></symbol>
+ <symbol id="i-loan" viewBox="0 0 24 24"><path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/></symbol>
+ <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-10.5a6 6 0 0 1 12 0C18 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2"/></symbol>
+ <symbol id="i-tag" viewBox="0 0 24 24"><path d="M4 4h8l8 8-8 8-8-8z"/><circle cx="8.2" cy="8.2" r="1.2"/></symbol>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></symbol>
+ <symbol id="i-cal" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10.5h16M8 3.5v4M16 3.5v4"/></symbol>
+ <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10-10a2 2 0 0 1 3 3L9 18zM14.5 6.5l3 3"/></symbol>
+ <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4.5h4V7M7 7l1 13h8l1-13M10.5 11v5M13.5 11v5"/></symbol>
+ <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v7h14v-7"/></symbol>
+ <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+ <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19 8a7.5 7.5 0 0 0-13.5 1.5M5 4v5.5h5.5M5 16a7.5 7.5 0 0 0 13.5-1.5M19 20v-5.5h-5.5"/></symbol>
+ <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3zM12 10v4.5M12 17.4v.1"/></symbol>
+ <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M8 11l4 4 4-4M5 20h14"/></symbol>
+ <symbol id="i-logo" viewBox="0 0 64 64"><path d="M32 4C20.4 4 11 13 11 24.4 11 38.6 27 53.6 30.2 56.4a2.7 2.7 0 0 0 3.6 0C37 53.6 53 38.6 53 24.4 53 13 43.6 4 32 4Z" fill="var(--acc)" stroke="none"/><circle cx="30" cy="23" r="7.5" fill="none" stroke="var(--acc-ink)" stroke-width="4"/><path d="M35.6 28.6 41 34" fill="none" stroke="var(--acc-ink)" stroke-width="4" stroke-linecap="round"/></symbol>
+</svg>
 <header>
-  <h1 id="appname">🔎 Dis moi où c'est !<span class="base" id="baseLabel"></span></h1>
-  <button class="btn sec" id="refBtn" title="Actualiser" style="padding:6px 10px" onclick="recharger()">🔄</button>
-  <button class="sw" data-c="azur" style="background:#1f6fd1" title="Charte Azur" onclick="setCharte('azur')"></button>
-  <button class="sw" data-c="ocean" style="background:#0e7c86" title="Charte Océan" onclick="setCharte('ocean')"></button>
-  <button class="sw" data-c="indigo" style="background:#4338ca" title="Charte Indigo" onclick="setCharte('indigo')"></button>
-  <button class="btn sec" id="themeBtn" title="Mode clair / sombre" style="padding:6px 10px">🌓</button>
+  <h1 id="appname"><svg aria-hidden="true"><use href="#i-logo"/></svg><span class="nm">dis moi <span class="o">où</span> c'est !<span class="base" id="baseLabel"></span></span></h1>
+  <button class="btn sec" id="refBtn" title="Actualiser" aria-label="Actualiser" style="padding:6px 10px" onclick="recharger()"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg></button>
+  <button class="sw" data-c="ocean" style="background:#0e7c86" title="Charte Océan" aria-label="Charte Océan" onclick="setCharte('ocean')"></button>
+  <button class="sw" data-c="azur" style="background:#1f6fd1" title="Charte Azur" aria-label="Charte Azur" onclick="setCharte('azur')"></button>
+  <button class="sw" data-c="indigo" style="background:#4338ca" title="Charte Indigo" aria-label="Charte Indigo" onclick="setCharte('indigo')"></button>
+  <button class="btn sec" id="themeBtn" title="Mode clair / sombre" aria-label="Mode clair / sombre" style="padding:6px 10px"></button>
 </header>
-<main id="view"><div class="card"><h2>⏳ Démarrage… <small class="meta">(v9)</small></h2><p class="meta">Si ce message reste affiché, le programme de la page n'a pas démarré.</p></div></main>
+<main id="view"><div class="card"><h2>Démarrage… <small class="meta">(v10)</small></h2><p class="meta">Si ce message reste affiché, le programme de la page n'a pas démarré.</p></div></main>
 <nav id="nav"></nav>
 <div id="modalRoot"></div>
 <div id="viewerRoot"></div>
@@ -119,7 +169,7 @@ function resetLocal() {
 function showFatal(m) {
   const v = document.getElementById('view'); if (!v) return;
   v.className = '';
-  v.innerHTML = '<div class="card"><h2>⚠️ Un problème est survenu</h2><p style="word-break:break-word">' + String(m).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</p><div class="row"><button class="btn" onclick="location.reload()">Recharger</button><button class="btn sec" onclick="resetLocal()">Effacer les données du téléphone et recharger</button></div></div>';
+  v.innerHTML = '<div class="card"><h2><svg class="ic sm" aria-hidden="true"><use href="#i-alert"/></svg> Un problème est survenu</h2><p style="word-break:break-word">' + String(m).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</p><div class="row"><button class="btn" onclick="location.reload()">Recharger</button><button class="btn sec" onclick="resetLocal()">Effacer les données du téléphone et recharger</button></div></div>';
 }
 window.addEventListener('error', e => {
   let extra = '';
@@ -185,8 +235,9 @@ async function act(fn) { try { return await fn(); } catch (e) { toast(msg(e), 45
 /* ====================================================================
  * État
  * ==================================================================== */
+const ic = (n, c) => '<svg class="ic ' + (c || '') + '" aria-hidden="true"><use href="#i-' + n + '"/></svg>';
 let types = [], emps = [], items = [];
-const S = { view: 'home', base: null, bases: [], email: '', theme: 'light', charte: 'azur', revealed: {}, sv: {}, loaded: false, error: '', tLoad: 0 };
+const S = { view: 'home', base: null, bases: [], email: '', theme: 'light', charte: 'ocean', revealed: {}, sv: {}, loaded: false, error: '', tLoad: 0 };
 let H = { q: '', done: false };
 const M0 = () => ({ q: '', T: new Set(), E: new Set(), pret: '', sens: '', photo: '', son: '', d1: '', d2: '', sort: 'date', dir: 'desc', mode: 'list', a1: '', a2: '', fopen: false });
 let M = M0();
@@ -261,7 +312,7 @@ function savePrefs(withBase) {
   const p = { theme: S.theme, charte: S.charte }; if (withBase && S.base) p.baseActive = S.base.id;
   api('sauverPrefs', p).catch(() => { });
 }
-function applyTheme() { document.documentElement.dataset.theme = S.theme; document.documentElement.dataset.charte = S.charte; document.querySelectorAll('.sw').forEach(b => b.classList.toggle('on', b.dataset.c === S.charte)); }
+function applyTheme() { document.documentElement.dataset.theme = S.theme; document.documentElement.dataset.charte = S.charte; document.querySelectorAll('.sw').forEach(b => b.classList.toggle('on', b.dataset.c === S.charte)); const tb = document.getElementById('themeBtn'); if (tb) tb.innerHTML = ic(S.theme === 'light' ? 'moon' : 'sun'); }
 function setCharte(c) { S.charte = c; savePrefs(); applyTheme(); }
 $('#themeBtn').onclick = () => { S.theme = S.theme === 'light' ? 'dark' : 'light'; savePrefs(); applyTheme(); };
 
@@ -289,8 +340,62 @@ function fillMinis() {
 /* ====================================================================
  * Navigation et affichage général
  * ==================================================================== */
-const NAV = [['home', '🏠', 'Accueil'], ['dash', '📊', 'Tableaux de bord'], ['infos', '🗃️', 'Mes Infos'], ['manage', '🗂️', 'Catégories & emplacements'], ['add', '➕', 'Ajouter'], ['bases', '👥', 'Bases'], ['aide', 'ℹ️', 'Aide']];
-function nav() { $('#nav').innerHTML = NAV.map(([k, i, l]) => `<button class="${S.view === k ? 'on' : ''}" onclick="go('${k}')"><b>${i}</b>${l}</button>`).join(''); }
+const TUTOS = [
+  { i: 'plus', t: 'Bien démarrer : ajouter son premier élément', s: [
+    'Touche « Ajouter & Modifier » dans la barre du bas, puis « Ajouter un élément ».',
+    'Écris un <b>titre</b> court et parlant : « Perceuse », « Facture EDF », « Code du garage ».',
+    'Choisis la <b>catégorie principale</b> et l’<b>emplacement principal</b>. Si la bonne case n’existe pas encore, tu peux la créer sur place.',
+    'Ajoute une description et des mots-clés si tu veux, mais ce n’est pas obligatoire.',
+    'Touche « Enregistrer ». Ton élément apparaît tout de suite sur l’accueil.'],
+    a: 'Pour retrouver un objet plus tard, pense au mot que tu taperais pour le chercher et mets-le dans le titre ou les mots-clés.' },
+  { i: 'photo', t: 'Ajouter des photos et un enregistrement son', s: [
+    'Ouvre le formulaire (« Ajouter un élément » ou « Modifier » sur un élément).',
+    'Dans la partie Photos, touche « Ajouter des photos » et choisis dans ta galerie ou sur ton ordinateur. Tu peux en mettre jusqu’à 12.',
+    'Laisse la page ouverte jusqu’à ce que « envoi… » disparaisse : les photos partent en arrière-plan.',
+    'Pour le son, touche « Enregistrer » (enregistreur du téléphone) ou « Importer un fichier son ». 5 Mo maximum.',
+    'Touche « Enregistrer » en bas du formulaire.'],
+    a: 'Une photo de l’endroit où tu ranges (le fond du placard, l’étagère) vaut mieux qu’une longue explication.' },
+  { i: 'layers', t: 'Organiser ses catégories et ses emplacements', s: [
+    'Ouvre « Ajouter & Modifier » dans la barre du bas : les catégories et les emplacements sont sous le bouton « Ajouter un élément ».',
+    'Crée un <b>groupe</b> avec « Nouveau groupe » (par exemple « Garage » ou « Papiers »).',
+    'Touche le « + » à côté d’un groupe pour ajouter un sous-niveau : Armoire, Placard, Tiroir, Étagère, ou un nom libre.',
+    'Touche le crayon pour changer le nom, choisir une icône ou ajouter une photo.',
+    'Le bouton « Suggérer des icônes » en propose automatiquement pour les entrées qui n’en ont pas.'],
+    a: 'Pour un emplacement, décris le chemin complet : Garage › Armoire › Près du frigo. Quelqu’un qui ne connaît pas la maison s’y retrouvera.' },
+  { i: 'search', t: 'Retrouver un objet avec les filtres', s: [
+    'Pour une recherche rapide, tape un ou plusieurs mots sur l’accueil. Les accents et les majuscules sont ignorés.',
+    'Pour affiner, va dans « Mes Infos » et ouvre « Filtres multicritères ».',
+    'Combine ce que tu veux : texte, catégories, emplacements, prêté ou non, sensible, avec photo, avec son, dates.',
+    'Passe d’un affichage à l’autre avec « Liste » et « Tableau ».',
+    'Touche « Réinitialiser » pour repartir de zéro, ou « CSV » pour exporter le résultat.'] },
+  { i: 'loan', t: 'Prêter et récupérer un objet', s: [
+    'Ouvre l’élément et touche « Modifier ».',
+    'Coche « Prêté », puis écris le nom de la personne et la date du prêt.',
+    'Enregistre : une pastille orange « Prêté à… » s’affiche dans les listes.',
+    'Pour voir tout ce qui est dehors, ouvre « Tableaux de bord » : le bloc « Actuellement prêtés » les rassemble.',
+    'Quand l’objet revient, ouvre l’élément et touche « Marquer comme rendu ».'] },
+  { i: 'users', t: 'Partager une base avec sa famille, et rejoindre une base partagée', s: [
+    '<b>Pour partager :</b> ouvre « Bases » et touche « Partager » à côté de la base concernée (tu dois en être le propriétaire).',
+    'Écris l’adresse Gmail de la personne et choisis ses droits : « modification » ou « lecture seule ».',
+    'Touche « Partager ». Google lui envoie un e-mail. Envoie-lui aussi le lien d’invitation (« Copier » ou « Envoyer… »).',
+    '<b>Pour rejoindre :</b> la personne ouvre le lien d’invitation avec le même compte Gmail. Sinon, elle va dans « Bases », touche « Rejoindre une base » et colle le lien.',
+    'Pour retirer quelqu’un, ouvre « Partager » puis touche « Retirer » en face de son adresse. Pour quitter une base qu’on t’a partagée, touche « Quitter ».'],
+    a: 'Une base personnelle reste privée. Crée une base séparée pour la famille et ne partage que celle-là.' },
+  { i: 'lock', t: 'Protéger une information sensible', s: [
+    'Dans le formulaire, coche « Information sensible ».',
+    'Un champ « Valeur sensible » apparaît : écris-y le code, le numéro ou le mot de passe.',
+    'Dans les listes, l’élément porte un petit cadenas et sa description reste cachée.',
+    'Pour lire la valeur, ouvre l’élément et touche « Afficher ». Touche « Masquer » ensuite.'],
+    a: 'La valeur sensible n’est jamais exportée dans le CSV et n’est lue qu’à la demande.' },
+  { i: 'home', t: 'Installer l’application sur l’écran d’accueil du téléphone', s: [
+    'Ouvre l’adresse de l’application (celle qui se termine par « exec ») dans le navigateur de ton téléphone.',
+    '<b>Android (Chrome) :</b> touche les trois points en haut à droite, puis « Ajouter à l’écran d’accueil ».',
+    '<b>iPhone (Safari) :</b> touche le bouton Partager, puis « Sur l’écran d’accueil ».',
+    'Confirme le nom proposé. Un raccourci apparaît avec les autres applications.'],
+    a: 'C’est un raccourci vers la page : il faut une connexion pour charger les dernières données, mais les dernières données vues s’affichent tout de suite.' }
+];
+const NAV = [['home', 'home', 'Accueil'], ['dash', 'dash', 'Tableaux de bord'], ['infos', 'infos', 'Mes Infos'], ['add', 'plus', 'Ajouter & Modifier'], ['bases', 'users', 'Bases'], ['aide', 'help', 'Aide']];
+function nav() { $('#nav').innerHTML = NAV.map(([k, i, l]) => `<button class="${S.view === k ? 'on' : ''}" onclick="go('${k}')"><b>${ic(i)}</b>${l}</button>`).join(''); }
 S.aide = 'about';
 function setAide(k) { S.aide = k; vAide(); window.scrollTo(0, 0); }
 function vAide() {
@@ -298,41 +403,33 @@ function vAide() {
   const li = a => '<ul style="margin:6px 0 0;padding-left:20px">' + a.map(t => '<li style="margin:4px 0">' + t + '</li>').join('') + '</ul>';
   let h = '';
   if (S.aide === 'about') {
-    h = `<div class="card"><h2>🎯 Le problème que résout l'application</h2>
+    h = `<div class="card"><h2>Le problème que résout l'application</h2>
       <p>« Où ai-je rangé la facture de la chaudière ? », « À qui ai-je prêté la perceuse ? », « Quel est le code d’accès ? », « Quelle est l’adresse de mon client ? », « Dans quel dossier est cette photo ? », « Quand est-on parti à Florence et où sont les photos du voyage ? », « Où sont les coordonnées de mon assurance vie, de mon fournisseur internet ? », « Où se trouvent tous les objets, le disjoncteur, l’arrivée d’eau, le code wifi, le parking et autres infos de ma location Airbnb ? »…<br>Nos affaires, nos papiers et nos informations sont dispersés : tiroirs, boîtes, cabinet à outils, ordinateur, téléphone, cloud, carnets. On perd du temps, on rachète ce qu'on possède déjà, on oublie à qui on a prêté.</p>
       <p><b>« Dis moi où c'est ! » est un carnet d'adresses de tes affaires, tes infos et de tes idées. Tout se retrouve à partir d’un seul champ de recherche sur ton téléphone.</b> Tu y notes <i>quoi</i> et <i>où</i> (avec une photo, un son, une description). Les objets physiques comme les choses immatérielles (fichiers, photos, idées, codes, contrats, abonnements) sont traités de la même façon.</p></div>
-    <div class="card"><h2>👤 Ce que ça change pour toi</h2>${li([
+    <div class="card"><h2>Ce que ça change pour toi</h2>${li([
       '<b>Retrouver en quelques secondes</b> : une seule recherche pour tout, sans te souvenir où tu as cherché la dernière fois.',
       '<b>Savoir qui a tes affaires</b> : tes prêts sont suivis, avec le nom de la personne et la date.',
       '<b>Garder les infos sensibles à l\u2019abri</b> : codes et numéros sont masqués tant que tu ne les affiches pas.',
       '<b>Partager avec la famille</b> : une base commune (outils de la maison, papiers du foyer) tout en gardant ta base personnelle privée.',
       '<b>Ne plus racheter</b> ce que tu as déjà.', '<b>Retrouver</b> garanties et dates d\u2019achat.',
       '<b>Utiliser partout</b> : sur téléphone comme sur ordinateur, avec tes propres données dans ton propre Google Drive.'])}</div>
-    <div class="card"><h2>🔐 Où sont tes données ?</h2><p>Chaque base est un classeur Google Sheet et un dossier Google Drive dans <b>ton</b> Drive. Rien n'est stocké ailleurs. Une base personnelle est privée ; une base partagée reste dans le Drive de son propriétaire, qui choisit qui peut la lire ou la modifier.</p></div>`;
+    <div class="card"><h2>Où sont tes données ?</h2><p>Chaque base est un classeur Google Sheet et un dossier Google Drive dans <b>ton</b> Drive. Rien n'est stocké ailleurs. Une base personnelle est privée ; une base partagée reste dans le Drive de son propriétaire, qui choisit qui peut la lire ou la modifier.</p></div>`;
   } else if (S.aide === 'fonc') {
     const bloc = (t, a) => `<div class="card"><h2>${t}</h2>${li(a)}</div>`;
-    h = bloc('🔍 Retrouver', ['Recherche multi-mots sur le titre, la description, les mots-clés, la catégorie et l\u2019emplacement (sans tenir compte des accents ni des majuscules).', 'Les 20 derniers éléments classés sur l\u2019accueil.', 'Mes Infos : filtres multicritères (catégories, emplacements, prêt, sensible, photo, son, dates) et tri.', 'Affichage en liste ou en tableau de tes infos ou affaires, et export CSV.', 'La description est lisible directement dans les listes, sauf pour les informations confidentielles.', 'Tableaux de bord : nombre d\u2019éléments, objets prêtés, éléments sans photo, répartition par catégorie et par lieu.'])
-     + bloc('🗂️ Classer', ['Catégories et emplacements organisés en arbre (groupes et sous-groupes), avec une couleur par groupe.', 'Une deuxième catégorie et un deuxième emplacement possibles pour un même élément.', 'Une icône et une photo possibles pour chaque catégorie, emplacement et sous-emplacement : un inconnu retrouve le bon endroit grâce aux photos.', 'Sous-emplacements proposés (armoire, placard, tiroir, étagère) à compléter avec tes propres détails, par exemple Garage › Armoire › Près du frigo.', 'Création à la volée pendant l\u2019ajout, et gestion complète (ajout, renommage, suppression) dans « Catégories & emplacements ».'])
-     + bloc('📝 Documenter', ['Titre, description, mots-clés.', 'Photos et captures d\u2019écran (jusqu\u2019à 12) ajoutées depuis la galerie ou l\u2019ordinateur, envoyées en arrière-plan.', 'Enregistrement sonore ou import d\u2019un fichier son.', 'Date d\u2019achat ou d\u2019inscription, avec l\u2019ancienneté affichée.', 'Icônes sur chaque ligne : 📝 description, 📷 photo, 🎙️ son.'])
-     + bloc('🤝 Prêts', ['Case « Prêté », nom de la personne et date.', 'Bouton « Marquer comme rendu ».', 'Liste des objets actuellement prêtés dans les tableaux de bord.'])
-     + bloc('🔒 Sécurité et confidentialité', ['Informations sensibles masquées par défaut, affichées à la demande, jamais exportées en CSV.', 'Bases personnelles privées, isolées entre les comptes.', 'Droits relus à chaque modification : lecture seule ou modification.', 'Suppression définitive avec confirmation.'])
-     + bloc('👥 Bases et partage', ['Plusieurs bases par personne (perso, famille, association…).', 'Partage par adresse Gmail avec droits « lecture » ou « modification », retrait d\u2019accès à tout moment.', 'Lien d\u2019invitation joint aux e-mails de partage.', 'Quitter une base sans rien supprimer.'])
-     + bloc('🎨 Confort', ['Mode clair ou sombre et trois chartes de couleurs (Azur, Océan, Indigo).', 'Dernières données affichées tout de suite, mises à jour en arrière-plan.', 'Brouillon du formulaire conservé si la page se recharge.', 'Utilisable sur téléphone et sur ordinateur.'])
-     + bloc('🚀 Idées à venir', ['Alertes de fin de garantie ou d\u2019abonnement.', 'Rappel de retour de prêt.', 'Étiquettes QR par emplacement.', 'Remplissage automatique à partir d\u2019une photo.', 'Import CSV, recherche vocale, scan de code-barres.']);
+    h = bloc('Retrouver', ['Recherche multi-mots sur le titre, la description, les mots-clés, la catégorie et l\u2019emplacement (sans tenir compte des accents ni des majuscules).', 'Les 20 derniers éléments classés sur l\u2019accueil.', 'Mes Infos : filtres multicritères (catégories, emplacements, prêt, sensible, photo, son, dates) et tri.', 'Affichage en liste ou en tableau de tes infos ou affaires, et export CSV.', 'La description est lisible directement dans les listes, sauf pour les informations confidentielles.', 'Tableaux de bord : nombre d\u2019éléments, objets prêtés, éléments sans photo, répartition par catégorie et par lieu.'])
+     + bloc('Classer', ['Catégories et emplacements organisés en arbre (groupes et sous-groupes), avec une couleur par groupe.', 'Une deuxième catégorie et un deuxième emplacement possibles pour un même élément.', 'Une icône et une photo possibles pour chaque catégorie, emplacement et sous-emplacement : un inconnu retrouve le bon endroit grâce aux photos.', 'Sous-emplacements proposés (armoire, placard, tiroir, étagère) à compléter avec tes propres détails, par exemple Garage › Armoire › Près du frigo.', 'Création à la volée pendant l\u2019ajout, et gestion complète (ajout, renommage, suppression) dans « Catégories & emplacements ».'])
+     + bloc('Documenter', ['Titre, description, mots-clés.', 'Photos et captures d\u2019écran (jusqu\u2019à 12) ajoutées depuis la galerie ou l\u2019ordinateur, envoyées en arrière-plan.', 'Enregistrement sonore ou import d\u2019un fichier son.', 'Date d\u2019achat ou d\u2019inscription, avec l\u2019ancienneté affichée.', 'Icônes sur chaque ligne : ' + ic('doc', 'sm') + ' description, ' + ic('photo', 'sm') + ' photo, ' + ic('mic', 'sm') + ' son.'])
+     + bloc('Prêts', ['Case « Prêté », nom de la personne et date.', 'Bouton « Marquer comme rendu ».', 'Liste des objets actuellement prêtés dans les tableaux de bord.'])
+     + bloc('Sécurité et confidentialité', ['Informations sensibles masquées par défaut, affichées à la demande, jamais exportées en CSV.', 'Bases personnelles privées, isolées entre les comptes.', 'Droits relus à chaque modification : lecture seule ou modification.', 'Suppression définitive avec confirmation.'])
+     + bloc('Bases et partage', ['Plusieurs bases par personne (perso, famille, association…).', 'Partage par adresse Gmail avec droits « lecture » ou « modification », retrait d\u2019accès à tout moment.', 'Lien d\u2019invitation joint aux e-mails de partage.', 'Quitter une base sans rien supprimer.'])
+     + bloc('Confort', ['Mode clair ou sombre et trois chartes de couleurs (Océan, Azur, Indigo).', 'Dernières données affichées tout de suite, mises à jour en arrière-plan.', 'Brouillon du formulaire conservé si la page se recharge.', 'Utilisable sur téléphone et sur ordinateur.'])
+     + bloc('Idées à venir', ['Alertes de fin de garantie ou d\u2019abonnement.', 'Rappel de retour de prêt.', 'Étiquettes QR par emplacement.', 'Remplissage automatique à partir d\u2019une photo.', 'Import CSV, recherche vocale, scan de code-barres.']);
   } else {
-    h = `<div class="card"><h2>🎓 Tutos</h2><p>Cette rubrique accueillera bientôt de courts tutos pas à pas, avec captures d'écran. Au programme :</p>${li([
-      'Bien démarrer : ajouter son premier élément',
-      'Ajouter des photos et un enregistrement son',
-      'Organiser ses catégories et ses emplacements',
-      'Retrouver un objet avec les filtres',
-      'Prêter et récupérer un objet',
-      'Partager une base avec sa famille, et rejoindre une base partagée',
-      'Protéger une information sensible',
-      'Installer l\u2019application sur l\u2019écran d\u2019accueil du téléphone'])}<p class="meta" style="margin-top:10px">🚧 Bientôt disponible.</p></div>`;
+    h = `<div class="card"><h2>Tutos</h2><p class="meta">Touche un titre pour voir les étapes.</p>${TUTOS.map((t, k) => `<details class="tuto"${k === 0 ? ' open' : ''}><summary>${ic(t.i, 'sm')} ${t.t}</summary><ol>${t.s.map(e => '<li>' + e + '</li>').join('')}</ol>${t.a ? '<p class="astuce"><b>Astuce.</b> ' + t.a + '</p>' : ''}</details>`).join('')}</div>`;
   }
-  $('#view').innerHTML = `<h2 style="margin:0 0 10px">ℹ️ Aide</h2><div class="row" style="flex-wrap:nowrap;margin-bottom:12px">${tab('about', 'À quoi ça sert')}${tab('fonc', 'Fonctionnalités')}${tab('tuto', 'Tutos')}</div>${h}`;
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">Aide</h2><div class="row" style="flex-wrap:nowrap;margin-bottom:12px">${tab('about', 'À quoi ça sert')}${tab('fonc', 'Fonctionnalités')}${tab('tuto', 'Tutos')}</div>${h}`;
 }
-function go(v) { if (v === 'add') { if (!S.loaded) return toast('Chargement en cours…'); return openForm(); } S.view = v; render(); }
+function go(v) { S.view = v; render(); }
 function render() { try { render_(); } catch (e) { showFatal(msg(e) + ' [affichage]'); } }
 function render_() {
   applyTheme(); nav();
@@ -341,12 +438,12 @@ function render_() {
   if (!S.loaded && S.view !== 'bases' && S.view !== 'aide') {
     v.className = '';
     v.innerHTML = S.error
-      ? `<div class="card"><h2>⚠️ Impossible de charger</h2><p>${esc(S.error)}</p><div class="row"><button class="btn" onclick="retry()">Réessayer</button><button class="btn sec" onclick="go('bases')">Mes bases</button></div></div>`
+      ? `<div class="card"><h2>${ic('alert', 'sm')} Impossible de charger</h2><p>${esc(S.error)}</p><div class="row"><button class="btn" onclick="retry()">Réessayer</button><button class="btn sec" onclick="go('bases')">Mes bases</button></div></div>`
       : `<div class="card"><h2>⏳ Chargement de ta base…</h2><p class="meta">La première ouverture peut prendre quelques secondes.</p></div>`;
     return;
   }
   v.className = ['home', 'dash', 'infos'].includes(S.view) ? 'soft' : '';
-  ({ home: vHome, dash: vDash, infos: vInfos, manage: vManage, bases: vBases, aide: vAide })[S.view]();
+  ({ home: vHome, dash: vDash, infos: vInfos, add: vManage, bases: vBases, aide: vAide })[S.view]();
   needMinis();
 }
 
@@ -354,17 +451,17 @@ function render_() {
  * Affichage d'un élément et recherche
  * ==================================================================== */
 function icones(i) {
-  const x = (t, e) => `<span title="${t}" style="margin-left:6px;font-size:14px;white-space:nowrap">${e}</span>`;
-  return (i.desc ? x('A une description', '📝') : '') + (i.ph.length ? x(i.ph.length + ' photo(s)', '📷' + (i.ph.length > 1 ? '<small>' + i.ph.length + '</small>' : '')) : '') + (i.au ? x('A un enregistrement son', '🎙️') : '');
+  const x = (t, e) => `<span title="${t}" style="margin-left:6px;font-size:13px;white-space:nowrap;color:var(--mute)">${e}</span>`;
+  return (i.desc ? x('A une description', ic('doc', 'sm')) : '') + (i.ph.length ? x(i.ph.length + ' photo(s)', ic('photo', 'sm') + (i.ph.length > 1 ? '<small>' + i.ph.length + '</small>' : '')) : '') + (i.au ? x('A un enregistrement son', ic('mic', 'sm')) : '');
 }
 function row(i) {
-  const ic = root('T', i.t)?.nom === 'Immatériel' ? '💾' : '🧰';
+  const ico = root('T', i.t)?.nom === 'Immatériel' ? ic('doc', 'lg') : ic('tool', 'lg');
   const p = i.ph[0];
-  return `<div class="item" onclick="openDetail('${i.id}')"><div class="thumb" ${p ? `data-ph="${p}"` : ''}>${p && TH[p] ? `<img src="${TH[p]}">` : ic}</div>
-  <div style="flex:1;min-width:0"><b>${esc(i.titre)}</b>${i.sens ? ' 🔒' : ''}${icones(i)}
+  return `<div class="item" onclick="openDetail('${i.id}')"><div class="thumb" ${p ? `data-ph="${p}"` : ''}>${p && TH[p] ? `<img src="${TH[p]}">` : ico}</div>
+  <div style="flex:1;min-width:0"><b>${esc(i.titre)}</b>${i.sens ? ' ' + ic('lock', 'sm') : ''}${icones(i)}
   ${!i.sens && i.desc ? `<div class="meta desc">${esc(i.desc)}</div>` : ''}
   <div>${chip('T', i.t)}${chip('T', i.t2)}${i.pret ? `<span class="tag pret">Prêté à ${esc(i.pa || '?')}</span>` : ''}</div>
-  <div>${chip('E', i.e, '📍 ')}${chip('E', i.e2, '📍 ')}</div></div></div>`;
+  <div>${chip('E', i.e, ic('pin', 'sm') + ' ')}${chip('E', i.e2, ic('pin', 'sm') + ' ')}</div></div></div>`;
 }
 function match(i, q) {
   const terms = norm(q).split(/\s+/).filter(Boolean);
@@ -377,10 +474,10 @@ const recent = (a, b) => (b.dh || b.date).localeCompare(a.dh || a.date);
 /* ===== ACCUEIL = recherche ===== */
 function vHome() {
   const dr = LS.get('dmoc:draft');
-  const ban = dr && dr.F && S.base && dr.base === S.base.id && !ro() ? `<div class="banner"><span>📝 Brouillon non enregistré : <b>${esc(dr.F.titre || '(sans titre)')}</b></span><button class="btn" onclick="resumeDraft()">Reprendre</button><button class="btn sec" onclick="clearDraft();vHome()">Supprimer</button></div>` : '';
+  const ban = dr && dr.F && S.base && dr.base === S.base.id && !ro() ? `<div class="banner"><span>${ic('doc', 'sm')} Brouillon non enregistré : <b>${esc(dr.F.titre || '(sans titre)')}</b></span><button class="btn" onclick="resumeDraft()">Reprendre</button><button class="btn sec" onclick="clearDraft();vHome()">Supprimer</button></div>` : '';
   $('#view').innerHTML = `${ban}<div class="card"><h2>Que cherches-tu ?</h2>
    <form onsubmit="doSearch(event)"><div class="row"><input id="qs" style="flex:3" placeholder="perceuse, facture, code interphone…" value="${esc(H.q)}" autocomplete="off" enterkeyhint="search">
-   <button class="btn" type="submit">🔍 Rechercher</button></div></form></div><div id="res"></div>`;
+   <button class="btn" type="submit">${ic('search', 'sm')} Rechercher</button></div></form></div><div id="res"></div>`;
   showRes();
 }
 function doSearch(ev) { ev.preventDefault(); H.q = $('#qs').value.trim(); H.done = !!H.q; showRes(); }
@@ -390,7 +487,7 @@ function showRes() {
     $('#res').innerHTML = `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${r.length} résultat${r.length > 1 ? 's' : ''} pour « ${esc(H.q)} »</h2><button class="btn sec" onclick="H={q:'',done:false};vHome()">Effacer</button></div>${r.map(row).join('') || '<p class="meta">Rien trouvé. Essaie un autre mot, ou va dans « Mes Infos » pour filtrer par catégorie.</p>'}</div>`;
   } else {
     const last = [...items].sort(recent).slice(0, 20);
-    $('#res').innerHTML = `<div class="card"><h2>Les 20 derniers éléments classés</h2>${last.map(row).join('') || '<p class="meta">Aucun élément pour l’instant. Touche « ➕ Ajouter » pour commencer.</p>'}</div>`;
+    $('#res').innerHTML = `<div class="card"><h2>Les 20 derniers éléments classés</h2>${last.map(row).join('') || '<div class="empty">' + ic('pin') + '<p><b>Rien de classé pour l’instant.</b></p><p>Touche « Ajouter & Modifier » pour ranger ta première affaire.</p></div>'}</div>`;
   }
   needMinis();
 }
@@ -404,17 +501,17 @@ function vDash() {
   const byE = L('E').filter(n => !n.p).map(n => [n, cnt('E', n)]);
   const mx = a => Math.max(1, ...a.map(x => x[1]));
   const bars = (k, a) => a.map(([n, c]) => `<div class="bar"><span style="background:${gcol(k, n.id)}">${esc(n.nom)}</span><i style="width:${c / mx(a) * 50}%"></i><span style="width:auto;padding:0">${c}</span></div>`).join('');
-  $('#view').innerHTML = `<h2 style="margin:0 0 10px">📊 Tableaux de bord</h2>
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">Tableaux de bord</h2>
   <div class="grid" style="margin-bottom:12px">
    <div class="kpi"><b>${items.length}</b><span>éléments classés</span></div>
    <div class="kpi" style="cursor:pointer" onclick="M=M0();M.pret='1';go('infos')"><b>${pretes.length}</b><span>objets prêtés</span></div>
-   <div class="kpi"><b>${items.filter(i => i.sens).length}</b><span>infos sensibles 🔒</span></div>
+   <div class="kpi"><b>${items.filter(i => i.sens).length}</b><span>infos sensibles</span></div>
    <div class="kpi" style="cursor:pointer" onclick="M=M0();M.photo='0';go('infos')"><b>${sansPhoto}</b><span>sans photo</span></div>
    <div class="kpi"><b>${types.filter(n => n.p).length}</b><span>catégories</span></div>
    <div class="kpi"><b>${emps.length}</b><span>emplacements</span></div></div>
   <div class="card"><h2>Par catégorie</h2>${bars('T', byT) || '<p class="meta">Rien à afficher.</p>'}</div>
   <div class="card"><h2>Par lieu principal</h2>${bars('E', byE)}</div>
-  ${pretes.length ? `<div class="card"><h2>⚠️ Actuellement prêtés</h2>${pretes.map(row).join('')}</div>` : ''}`;
+  ${pretes.length ? `<div class="card"><h2>${ic('loan', 'sm')} Actuellement prêtés</h2>${pretes.map(row).join('')}</div>` : ''}`;
 }
 
 /* ===== MES INFOS = base filtrable ===== */
@@ -441,21 +538,21 @@ function chipsFilter(k) {
 }
 function tgl(el, k, id) { const s = M[k]; s.has(id) ? s.delete(id) : s.add(id); el.classList.toggle('on'); mlist(); }
 const nfilt = () => M.T.size + M.E.size + ['q', 'pret', 'sens', 'photo', 'son', 'd1', 'd2', 'a1', 'a2'].filter(f => M[f]).length;
-const fsum = () => '🎚️ Filtres multicritères' + (nfilt() ? ' (' + nfilt() + ' actif' + (nfilt() > 1 ? 's' : '') + ')' : '');
+const fsum = () => 'Filtres multicritères' + (nfilt() ? ' (' + nfilt() + ' actif' + (nfilt() > 1 ? 's' : '') + ')' : '');
 function vInfos() {
-  $('#view').innerHTML = `<h2 style="margin:0 0 10px">🗃️ Mes Infos</h2>
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">Mes Infos</h2>
   <div class="card"><details ${M.fopen ? 'open' : ''} ontoggle="M.fopen=this.open"><summary id="fsum">${fsum()}</summary>
    <label>Texte</label><input value="${esc(M.q)}" placeholder="mot dans le titre, la description, les mots-clés…" oninput="M.q=this.value;mlist()">
    <details style="margin-top:6px"><summary>Catégories ${M.T.size ? '(' + M.T.size + ')' : ''}</summary>${chipsFilter('T')}</details>
    <details style="margin-top:6px"><summary>Emplacements ${M.E.size ? '(' + M.E.size + ')' : ''}</summary>${chipsFilter('E')}</details>
-   <div class="row" style="margin-top:6px">${sel3('pret', 'Prêt', 'Prêtés', 'Non prêtés')}${sel3('sens', 'Sensible 🔒', 'Sensibles', 'Non sensibles')}${sel3('photo', 'Photo', 'Avec photo', 'Sans photo')}${sel3('son', 'Fichier son', 'Avec son', 'Sans son')}</div>
+   <div class="row" style="margin-top:6px">${sel3('pret', 'Prêt', 'Prêtés', 'Non prêtés')}${sel3('sens', 'Sensible', 'Sensibles', 'Non sensibles')}${sel3('photo', 'Photo', 'Avec photo', 'Sans photo')}${sel3('son', 'Fichier son', 'Avec son', 'Sans son')}</div>
    <div class="row"><div><label>Modifié du</label><input type="date" value="${M.d1}" onchange="M.d1=this.value;mlist()"></div><div><label>au</label><input type="date" value="${M.d2}" onchange="M.d2=this.value;mlist()"></div>
     <div><label>Trier par</label><select onchange="M.sort=this.value;mlist()">${[['date', 'Date de modification'], ['achat', "Date d'achat / inscription"], ['titre', 'Titre'], ['type', 'Catégorie'], ['lieu', 'Emplacement']].map(([v, l]) => `<option value="${v}" ${M.sort === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
     <div><label>Ordre</label><select onchange="M.dir=this.value;mlist()"><option value="desc" ${M.dir === 'desc' ? 'selected' : ''}>Décroissant</option><option value="asc" ${M.dir === 'asc' ? 'selected' : ''}>Croissant</option></select></div></div>
    <div class="row"><div><label>Acheté / inscrit du</label><input type="date" value="${M.a1}" onchange="M.a1=this.value;mlist()"></div><div><label>au</label><input type="date" value="${M.a2}" onchange="M.a2=this.value;mlist()"></div></div>
    <div class="row" style="margin-top:12px"><button class="btn sec" onclick="M=Object.assign(M0(),{mode:M.mode,fopen:M.fopen});vInfos()">↺ Réinitialiser</button></div></details></div>
   <div class="card"><div class="meta" id="cnt" style="margin-bottom:8px"></div>
-   <div class="tools"><button class="btn sec" id="mL" onclick="M.mode='list';mlist()">☰ Liste</button> <button class="btn sec" id="mT" onclick="M.mode='table';mlist()">▦ Tableau</button> <button class="btn sec" onclick="exportCsv()">⬇️ CSV</button></div>
+   <div class="tools"><button class="btn sec" id="mL" onclick="M.mode='list';mlist()">☰ Liste</button> <button class="btn sec" id="mT" onclick="M.mode='table';mlist()">▦ Tableau</button> <button class="btn sec" onclick="exportCsv()">${ic('download', 'sm')} CSV</button></div>
    <div id="lst"></div></div>`;
   mlist();
 }
@@ -463,7 +560,7 @@ function mlist() {
   const r = mf(); $('#fsum').textContent = fsum(); $('#cnt').textContent = r.length + ' élément' + (r.length > 1 ? 's' : '') + ' sur ' + items.length;
   $('#mL').style.outline = M.mode === 'list' ? '2px solid var(--acc)' : 'none'; $('#mT').style.outline = M.mode === 'table' ? '2px solid var(--acc)' : 'none';
   $('#lst').innerHTML = !r.length ? '<p class="meta">Aucun élément ne correspond à ces filtres.</p>' : M.mode === 'list' ? r.slice(0, 300).map(row).join('') + (r.length > 300 ? `<p class="meta">300 premiers éléments affichés sur ${r.length} : affine les filtres.</p>` : '') :
-   `<div class="tbw"><table class="tb"><thead><tr><th>Titre<th>Description<th>Catégorie<th>Emplacement<th>Prêt<th>Contenu<th>Achat / inscr.<th>Modifié</tr></thead><tbody>${r.slice(0, 500).map(i => `<tr class="r" onclick="openDetail('${i.id}')"><td><b>${esc(i.titre)}</b>${i.sens ? ' 🔒' : ''}<td class="meta" style="min-width:160px">${i.sens ? '' : esc(i.desc.length > 120 ? i.desc.slice(0, 120) + '…' : i.desc)}<td>${chip('T', i.t)}${chip('T', i.t2)}<td>${chip('E', i.e)}${chip('E', i.e2)}<td>${i.pret ? esc(i.pa) : ''}<td>${icones(i)}<td>${fr(i.da)}<td>${esc(i.date)}</tr>`).join('')}</tbody></table></div>`;
+   `<div class="tbw"><table class="tb"><thead><tr><th>Titre<th>Description<th>Catégorie<th>Emplacement<th>Prêt<th>Contenu<th>Achat / inscr.<th>Modifié</tr></thead><tbody>${r.slice(0, 500).map(i => `<tr class="r" onclick="openDetail('${i.id}')"><td><b>${esc(i.titre)}</b>${i.sens ? ' ' + ic('lock', 'sm') : ''}<td class="meta" style="min-width:160px">${i.sens ? '' : esc(i.desc.length > 120 ? i.desc.slice(0, 120) + '…' : i.desc)}<td>${chip('T', i.t)}${chip('T', i.t2)}<td>${chip('E', i.e)}${chip('E', i.e2)}<td>${i.pret ? esc(i.pa) : ''}<td>${icones(i)}<td>${fr(i.da)}<td>${esc(i.date)}</tr>`).join('')}</tbody></table></div>`;
   needMinis();
 }
 function exportCsv() {
@@ -479,22 +576,22 @@ function modal(html, sticky) { $('#modalRoot').innerHTML = `<div class="modal" $
 function closeM() { $('#modalRoot').innerHTML = ''; }
 function placeHtml(i) {
   const l = placeList(i); if (!l.length) return '';
-  return `<div class="meta" style="margin-top:8px">📸 Pour t’aider à trouver l’endroit :</div><div class="photos">${l.map((n, k) => `<div style="width:84px;text-align:center"><div class="slot" data-ph="${n.ph}" onclick="openViewerNodes('${i.id}',${k})">${TH[n.ph] ? `<img src="${TH[n.ph]}">` : '…'}</div><div class="meta" style="font-size:11px;word-break:break-word">${esc(n.nom)}</div></div>`).join('')}</div>`;
+  return `<div class="meta" style="margin-top:8px">${ic('photo', 'sm')} Pour t’aider à trouver l’endroit :</div><div class="photos">${l.map((n, k) => `<div style="width:84px;text-align:center"><div class="slot" data-ph="${n.ph}" onclick="openViewerNodes('${i.id}',${k})">${TH[n.ph] ? `<img src="${TH[n.ph]}">` : '…'}</div><div class="meta" style="font-size:11px;word-break:break-word">${esc(n.nom)}</div></div>`).join('')}</div>`;
 }
 function openDetail(id) {
   const i = items.find(x => x.id === id); if (!i) return;
   const sh = S.revealed[id];
-  modal(`<div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2 style="margin:0">${esc(i.titre)}</h2><button class="btn sec" onclick="closeM()">✕</button></div>
+  modal(`<div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2 style="margin:0">${esc(i.titre)}</h2><button class="btn sec" title="Fermer" aria-label="Fermer" onclick="closeM()">${ic('x', 'sm')}</button></div>
   <div>${chip('T', i.t)}${chip('T', i.t2)}${i.pret ? `<span class="tag pret">Prêté</span>` : ''}</div>
   <p>${esc(i.desc) || '<span class="meta">Pas de description</span>'}</p>
-  ${i.da ? `<div class="card">📅 Acheté / inscrit le <b>${fr(i.da)}</b> <span class="meta">(${ago(i.da)})</span></div>` : ''}
-  <div class="card">${chip('E', i.e, '📍 ') || '<span class="meta">Sans emplacement</span>'}${chip('E', i.e2, '📍 ')}${placeHtml(i)}</div>
-  ${i.sens ? `<div class="sens"><span>🔒 ${sh ? '<b>' + esc(S.sv[id]) + '</b>' : 'Information masquée'}</span><button class="btn sec" onclick="togSens('${id}')">${sh ? 'Masquer' : 'Afficher'}</button></div>` : ''}
-  ${i.pret ? `<div class="card">🤝 Prêté à <b>${esc(i.pa)}</b> depuis le ${esc(i.dp)}<br><button class="btn sec" style="margin-top:8px" ${ro() ? 'disabled' : ''} onclick="retour('${id}')">Marquer comme rendu</button></div>` : ''}
+  ${i.da ? `<div class="card">${ic('cal', 'sm')} Acheté / inscrit le <b>${fr(i.da)}</b> <span class="meta">(${ago(i.da)})</span></div>` : ''}
+  <div class="card">${chip('E', i.e, ic('pin', 'sm') + ' ') || '<span class="meta">Sans emplacement</span>'}${chip('E', i.e2, ic('pin', 'sm') + ' ')}${placeHtml(i)}</div>
+  ${i.sens ? `<div class="sens"><span>${ic('lock', 'sm')} ${sh ? '<b>' + esc(S.sv[id]) + '</b>' : 'Information masquée'}</span><button class="btn sec" onclick="togSens('${id}')">${sh ? 'Masquer' : 'Afficher'}</button></div>` : ''}
+  ${i.pret ? `<div class="card">${ic('loan', 'sm')} Prêté à <b>${esc(i.pa)}</b> depuis le ${esc(i.dp)}<br><button class="btn sec" style="margin-top:8px" ${ro() ? 'disabled' : ''} onclick="retour('${id}')">Marquer comme rendu</button></div>` : ''}
   ${i.ph.length ? `<div class="photos">${i.ph.map((p, k) => `<div class="slot" data-ph="${p}" onclick="openViewer('${id}',${k})">${TH[p] ? `<img src="${TH[p]}">` : '…'}</div>`).join('')}</div>` : ''}
   ${i.au ? `<div class="card"><button class="btn sec" onclick="playSon('${id}')">▶ Écouter le son</button><div id="sonBox" style="margin-top:8px"></div></div>` : ''}
   <div class="meta">Dernière modification : ${esc(i.date)}${i.par ? ' par ' + esc(i.par) : ''}</div>
-  ${ro() ? '' : `<div class="row" style="margin-top:12px"><button class="btn" onclick="openForm('${id}')">✏️ Modifier</button><button class="btn del" onclick="askDel('${id}')">🗑️ Supprimer</button></div>`}`);
+  ${ro() ? '' : `<div class="row" style="margin-top:12px"><button class="btn" onclick="openForm('${id}')">${ic('edit', 'sm')} Modifier</button><button class="btn del" onclick="askDel('${id}')">${ic('trash', 'sm')} Supprimer</button></div>`}`);
   fillMinis(); needMinis();
 }
 async function togSens(id) {
@@ -504,7 +601,7 @@ async function togSens(id) {
 }
 async function playSon(id) {
   const i = items.find(x => x.id === id); if (!i || !i.au) return;
-  const box = $('#sonBox'); if (box) box.textContent = '⏳ Chargement du son…';
+  const box = $('#sonBox'); if (box) box.textContent = 'Chargement du son…';
   const r = await act(() => api('lireSon', S.base.id, i.au));
   if (!box) return; box.textContent = '';
   const m = r && /^data:(audio\/[\w.+-]+)(?:;[\w=.+-]+)*;base64,([A-Za-z0-9+\/=]+)$/.exec(r.dataUrl);
@@ -528,7 +625,7 @@ async function retour(id) {
 }
 function askDel(id) {
   const i = items.find(x => x.id === id);
-  modal(`<h2>⚠️ Supprimer définitivement ?</h2><p>« <b>${esc(i.titre)}</b> » sera supprimé avec ses photos et son fichier son. <b>Cette action est irréversible.</b></p>
+  modal(`<h2>${ic('alert', 'sm')} Supprimer définitivement ?</h2><p>« <b>${esc(i.titre)}</b> » sera supprimé avec ses photos et son fichier son. <b>Cette action est irréversible.</b></p>
   <div class="row"><button class="btn sec" onclick="openDetail('${id}')">Annuler</button><button class="btn del" onclick="del('${id}')">Oui, supprimer</button></div>`);
 }
 async function del(id) {
@@ -593,7 +690,7 @@ async function loadSv(f) {
     const el = $('#f_sv'); if (el) { el.value = v; el.disabled = false; el.placeholder = ''; }
   } catch (e) { if (F === f) { f.svState = 'err'; const el = $('#f_sv'); if (el) { el.placeholder = 'Valeur non chargée (elle sera conservée)'; } } }
 }
-const pickBtn = (k, f, ph) => `<button type="button" class="pickbtn" style="background:${F[f] ? gcol(k, F[f]) : 'var(--card)'}" onclick="openPicker('${k}','${f}')">${F[f] && N(k, F[f]) ? esc((icOf(k, F[f]) || (k === 'E' ? '📍' : '')) + ' ' + path(k, F[f], k === 'T')).trim() : '<span class="meta">' + ph + '</span>'}</button>`;
+const pickBtn = (k, f, ph) => `<button type="button" class="pickbtn" style="background:${F[f] ? gcol(k, F[f]) : 'var(--card)'}" onclick="openPicker('${k}','${f}')">${F[f] && N(k, F[f]) ? esc((icOf(k, F[f]) || '') + ' ' + path(k, F[f], k === 'T')).trim() : '<span class="meta">' + ph + '</span>'}</button>`;
 function drawForm() {
   modal(`<h2>${F.neu ? 'Nouvel élément' : 'Modifier'}</h2>
   <label>Titre *</label><input id="f_titre" value="${esc(F.titre)}" maxlength="200" placeholder="Ex. Perceuse, Facture EDF, Code garage…">
@@ -601,17 +698,17 @@ function drawForm() {
   <div class="row"><div><label>Catégorie principale *</label>${pickBtn('T', 't', 'Choisir ou créer…')}</div><div><label>2ᵉ catégorie (option)</label>${pickBtn('T', 't2', '— aucune —')}</div></div>
   <div class="row"><div><label>Emplacement principal *</label>${pickBtn('E', 'e', 'Choisir ou créer…')}</div><div><label>2ᵉ emplacement (option)</label>${pickBtn('E', 'e2', '— aucun —')}</div></div>
   <label>Mots-clés</label><input id="f_tags" value="${esc(F.tags)}" placeholder="séparés par des espaces">
-  <label>📅 Date d'achat ou d'inscription (facultatif)</label><input type="date" id="f_da" value="${esc(F.da || '')}"><div class="meta">Utile pour suivre les garanties et les fins d'abonnement.</div>
-  <div class="chk"><input type="checkbox" id="f_pret" ${F.pret ? 'checked' : ''} onchange="sync();F.pret=this.checked;drawForm()"><label for="f_pret" style="margin:0">🤝 Prêté</label></div>
+  <label>${ic('cal', 'sm')} Date d'achat ou d'inscription (facultatif)</label><input type="date" id="f_da" value="${esc(F.da || '')}"><div class="meta">Utile pour suivre les garanties et les fins d'abonnement.</div>
+  <div class="chk"><input type="checkbox" id="f_pret" ${F.pret ? 'checked' : ''} onchange="sync();F.pret=this.checked;drawForm()"><label for="f_pret" style="margin:0">${ic('loan', 'sm')} Prêté</label></div>
   ${F.pret ? `<div class="row"><div><label>Prêté à</label><input id="f_pa" value="${esc(F.pa)}"></div><div><label>Depuis le</label><input type="date" id="f_dp" value="${esc(F.dp)}"></div></div>` : ''}
-  <div class="chk"><input type="checkbox" id="f_sens" ${F.sens ? 'checked' : ''} onchange="sync();F.sens=this.checked;drawForm()"><label for="f_sens" style="margin:0">🔒 Information sensible (masquée par défaut)</label></div>
+  <div class="chk"><input type="checkbox" id="f_sens" ${F.sens ? 'checked' : ''} onchange="sync();F.sens=this.checked;drawForm()"><label for="f_sens" style="margin:0">${ic('lock', 'sm')} Information sensible (masquée par défaut)</label></div>
   ${F.sens ? `<label>Valeur sensible</label><input id="f_sv" value="${esc(F.sv)}" ${F.svState === 'loading' ? 'disabled placeholder="Chargement…"' : ''} autocomplete="off">` : ''}
-  <label>📷 Photos / captures d'écran <span id="phCount" class="meta"></span></label>
+  <label>${ic('photo', 'sm')} Photos / captures d'écran <span id="phCount" class="meta"></span></label>
   <div class="photos" id="phBox"></div>
   <div class="row">
-   <label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">🖼️ Ajouter des photos (galerie ou ordinateur)<input type="file" accept="image/\x2a" multiple hidden onchange="addPhotos([...this.files]);this.value=''"></label></div>
-  <label>🎙️ Fichier son</label><div id="auBox"></div>
-  <div class="row" style="margin-top:16px"><button class="btn sec" onclick="cancelForm()">Annuler</button><button class="btn" id="saveBtn" onclick="saveForm()">💾 Enregistrer</button></div>`, true);
+   <label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">${ic('photo', 'sm')} Ajouter des photos (galerie ou ordinateur)<input type="file" accept="image/\x2a" multiple hidden onchange="addPhotos([...this.files]);this.value=''"></label></div>
+  <label>${ic('mic', 'sm')} Fichier son</label><div id="auBox"></div>
+  <div class="row" style="margin-top:16px"><button class="btn sec" onclick="cancelForm()">Annuler</button><button class="btn" id="saveBtn" onclick="saveForm()">Enregistrer</button></div>`, true);
   renderPhotos(); renderAudio();
 }
 function sync() { ['titre', 'desc', 'tags', 'da', 'pa', 'dp', 'sv'].forEach(k => { const el = document.getElementById('f_' + k); if (el) F[k] = el.value; }); }
@@ -622,7 +719,7 @@ function renderPhotos() {
   const b = $('#phBox'); if (!b || !F) return;
   b.innerHTML = F.ph.map((p, k) => {
     const o = typeof p === 'object', src = phSrc(p);
-    return `<div style="position:relative"><div class="slot" ${!o ? `data-ph="${p}"` : ''}>${src ? `<img src="${src}">` : '…'}${o && p.st === 'envoi' ? '<div class="up">⏫ envoi…</div>' : ''}${o && p.st === 'err' ? '<div class="up">⚠️ échec</div>' : ''}</div><button class="mini" style="position:absolute;top:2px;right:2px" onclick="rmPh(${k})">✕</button></div>`;
+    return `<div style="position:relative"><div class="slot" ${!o ? `data-ph="${p}"` : ''}>${src ? `<img src="${src}">` : '…'}${o && p.st === 'envoi' ? '<div class="up">envoi…</div>' : ''}${o && p.st === 'err' ? '<div class="up">échec</div>' : ''}</div><button class="mini" style="position:absolute;top:2px;right:2px" title="Retirer" aria-label="Retirer" onclick="rmPh(${k})">${ic('x', 'sm')}</button></div>`;
   }).join('') || '<span class="meta">Aucune photo</span>';
   const c = $('#phCount'); if (c) c.textContent = F.ph.length ? `(${F.ph.length}/12)` : '';
   needMinis();
@@ -658,9 +755,9 @@ async function addPhotos(files) {
 function renderAudio() {
   const b = $('#auBox'); if (!b || !F) return; const a = F.au;
   b.innerHTML = a
-    ? `<div class="sens"><span>🎙️ ${typeof a === 'string' ? 'Fichier son joint' : esc(a.name) + (a.st === 'envoi' ? ' — envoi…' : a.st === 'err' ? ' — ⚠️ échec' : ' ✔')}</span><button class="btn del" onclick="rmAu()">Retirer</button></div>`
-    : `<div class="row"><label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">🎙️ Enregistrer<input type="file" accept="audio/\x2a" capture hidden onchange="addAudio(this.files[0]);this.value=''"></label>
-       <label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">📁 Importer un fichier son<input type="file" accept="audio/\x2a" hidden onchange="addAudio(this.files[0]);this.value=''"></label></div>
+    ? `<div class="sens"><span>${ic('mic', 'sm')} ${typeof a === 'string' ? 'Fichier son joint' : esc(a.name) + (a.st === 'envoi' ? ' — envoi…' : a.st === 'err' ? ' — échec' : ' — envoyé')}</span><button class="btn del" onclick="rmAu()">Retirer</button></div>`
+    : `<div class="row"><label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">${ic('mic', 'sm')} Enregistrer<input type="file" accept="audio/\x2a" capture hidden onchange="addAudio(this.files[0]);this.value=''"></label>
+       <label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">${ic('share', 'sm')} Importer un fichier son<input type="file" accept="audio/\x2a" hidden onchange="addAudio(this.files[0]);this.value=''"></label></div>
        <div class="meta">« Enregistrer » ouvre l'enregistreur du téléphone (le micro direct est bloqué dans ce type d'application). 5 Mo maximum.</div>`;
 }
 function rmAu() { sync(); F.au = null; renderAudio(); draftSoon(); }
@@ -696,7 +793,7 @@ async function saveForm() {
   if (!F.titre.trim()) return toast('Le titre est obligatoire');
   if (!F.t || !F.e) return toast('Choisis une catégorie et un emplacement');
   F.saving = true; const btn = $('#saveBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
-  const fin = () => { F.saving = false; const b = $('#saveBtn'); if (b) { b.disabled = false; b.textContent = '💾 Enregistrer'; } };
+  const fin = () => { F.saving = false; const b = $('#saveBtn'); if (b) { b.disabled = false; b.textContent = 'Enregistrer'; } };
   const att = [...F.ph.filter(p => typeof p === 'object').map(p => p.p), F.au && typeof F.au === 'object' ? F.au.p : null].filter(Boolean);
   if (att.length) await Promise.all(att);
   if (F.ph.some(p => typeof p === 'object' && p.st !== 'ok') || (F.au && typeof F.au === 'object' && F.au.st !== 'ok')) { fin(); return toast('Une photo ou un son n’a pas été envoyé : retire-le ou réessaie', 4500); }
@@ -708,14 +805,14 @@ async function saveForm() {
   if (!F.neu) el.id = F.id;
   const r = await act(() => api(F.neu ? 'ajouterElement' : 'modifierElement', S.base.id, el));
   if (!r) return fin();
-  upsert(r); clearDraft(); F = null; closeM(); toast('Enregistré ✔'); render();
+  upsert(r); clearDraft(); F = null; closeM(); toast('Enregistré'); render();
 }
 
 /* ===== Sélecteur avec création à la volée ===== */
 let P = null;
 function openPicker(k, f) { sync(); P = { k, f, add: null }; drawPicker(); }
 const TYPES_EMP = ['Armoire', 'Placard', 'Tiroir', 'Étagère'];
-const lbl = n => (n.ic ? esc(n.ic) + ' ' : '') + esc(n.nom) + (n.ph ? ' 📷' : '');
+const lbl = n => (n.ic ? esc(n.ic) + ' ' : '') + esc(n.nom) + (n.ph ? ' ' + ic('photo', 'sm') : '');
 function suggestOk(k, pid) { const n = pid ? N(k, pid) : null; return k === 'E' && !!n && !!n.p && !TYPES_EMP.map(norm).includes(norm(n.nom)); }
 const sugHtml = id => `<div style="margin:4px 0">${TYPES_EMP.map(t => `<span class="fc" onclick="fillIn('${id}','${t}')">${t}</span>`).join('')}<div class="meta">Ex. : Garage › Armoire › Près du frigo</div></div>`;
 function fillIn(id, v) { const el = document.getElementById(id); if (el) { el.value = v; el.focus(); } }
@@ -752,11 +849,11 @@ function nameM(t, init, cb) { CB = cb; modal(`<h2>${t}</h2><input id="nm" maxlen
 function nmOk() { const v = $('#nm').value.trim(); if (!v) return; closeM(); CB(v); }
 function vManage() {
   const dis = ro() ? 'disabled' : '';
-  const btns = (k, id) => `<span style="white-space:nowrap"><button class="mini" ${dis} title="Ajouter dedans" onclick="addNode('${k}','${id}')">＋</button> <button class="mini" ${dis} title="Nom, icône, photo" onclick="editNode('${k}','${id}')">✏️</button> <button class="mini" ${dis} onclick="askDelNode('${k}','${id}')">🗑️</button></span>`;
+  const btns = (k, id) => `<span style="white-space:nowrap;flex:none;padding:0;background:none"><button class="mini" ${dis} title="Ajouter dedans" onclick="addNode('${k}','${id}')">＋</button> <button class="mini" ${dis} title="Nom, icône, photo" onclick="editNode('${k}','${id}')">${ic('edit', 'sm')}</button> <button class="mini" ${dis} title="Supprimer" onclick="askDelNode('${k}','${id}')">${ic('trash', 'sm')}</button></span>`;
   const nom = (k, c, gras) => `<span class="node">${c.ph ? `<span class="thumb" data-ph="${c.ph}">${TH[c.ph] ? `<img src="${TH[c.ph]}">` : '…'}</span>` : ''}<span style="cursor:default;min-width:0">${c.ic ? esc(c.ic) + ' ' : ''}${gras ? '<b>' + esc(c.nom) + '</b>' : esc(c.nom) + ' <small class="meta">(' + items.filter(i => has(k, c.id, i)).length + ')</small>'}</span></span>`;
   const rows = (k, id, dp) => L(k).filter(x => x.p === id).map(c => `<div class="pr" style="padding-left:${dp * 14}px">${nom(k, c, false)}${btns(k, c.id)}</div>${rows(k, c.id, dp + 1)}`).join('');
-  const tree = (k, title) => `<div class="card"><h2>${title}</h2>${L(k).filter(x => !x.p).map(r => `<div class="grp" style="background:${gcol(k, r.id)}"><div class="gh">${nom(k, r, true)}${btns(k, r.id)}</div>${rows(k, r.id, 0)}</div>`).join('')}<div class="row"><button class="btn" ${dis} onclick="addNode('${k}','')">＋ Nouveau groupe</button><button class="btn sec" ${dis} onclick="suggereIcones('${k}')">✨ Suggérer des icônes</button></div></div>`;
-  $('#view').innerHTML = `<h2 style="margin:0 0 6px">🗂️ Catégories & emplacements</h2><p class="meta" style="margin:0 0 12px">Ajoute, modifie ou supprime ici tes catégories et tes emplacements. Avec ✏️, tu peux changer le nom, choisir une icône et ajouter une photo : pour un emplacement, la photo aide quelqu’un qui ne connaît pas les lieux à trouver le bon endroit. Tu peux aussi créer des entrées directement en ajoutant un élément.</p>${tree('T', 'Catégories')}${tree('E', 'Emplacements')}`;
+  const tree = (k, title) => `<div class="card"><h2>${title}</h2>${L(k).filter(x => !x.p).map(r => `<div class="grp" style="background:${gcol(k, r.id)}"><div class="gh">${nom(k, r, true)}${btns(k, r.id)}</div>${rows(k, r.id, 0)}</div>`).join('')}<div class="row"><button class="btn" ${dis} onclick="addNode('${k}','')">＋ Nouveau groupe</button><button class="btn sec" ${dis} onclick="suggereIcones('${k}')">Suggérer des icônes</button></div></div>`;
+  $('#view').innerHTML = `<h2 style="margin:0 0 10px">Ajouter & Modifier</h2><div class="card"><button class="btn" style="width:100%" onclick="openForm()">${ic('plus', 'sm')} Ajouter un élément</button><p class="meta" style="margin:10px 0 0">Pour modifier un élément, ouvre-le depuis l’accueil ou « Mes Infos », puis touche « Modifier ».</p></div><h2 style="margin:14px 0 6px">Catégories & emplacements</h2><p class="meta" style="margin:0 0 12px">Ajoute, modifie ou supprime ici tes catégories et tes emplacements. Avec le crayon (${ic('edit', 'sm')}), tu peux changer le nom, choisir une icône et ajouter une photo : pour un emplacement, la photo aide quelqu’un qui ne connaît pas les lieux à trouver le bon endroit. Tu peux aussi créer des entrées directement en ajoutant un élément.</p>${tree('T', 'Catégories')}${tree('E', 'Emplacements')}`;
   needMinis();
 }
 function addNode(k, pid) {
@@ -773,7 +870,7 @@ async function suggereIcones(k) {
   if (!Object.keys(map).length) return toast('Rien à suggérer : toutes les entrées reconnues ont déjà une icône', 3500);
   const r = await act(() => api('definirIcones', S.base.id, k, map)); if (!r) return;
   Object.keys(map).forEach(id => { N(k, id).ic = map[id]; });
-  cacheSoon(); toast(r.modifies + ' icône(s) ajoutée(s) : modifie-les avec ✏️', 3500); vManage();
+  cacheSoon(); toast(r.modifies + ' icône(s) ajoutée(s) : modifie-les avec le crayon', 3500); vManage();
 }
 let EN = null;
 function editNode(k, id) { const n = N(k, id); EN = { k, id, nom: n.nom, ic: n.ic || '', ph: n.ph || '', nouv: null, retire: false }; drawEdit(); }
@@ -784,9 +881,9 @@ function drawEdit() {
   <label>Icône</label><div class="row" style="flex-wrap:nowrap"><input id="en_ic" maxlength="8" value="${esc(e.ic)}" style="max-width:90px;font-size:22px;text-align:center" oninput="EN.ic=this.value"><span class="meta">Choisis ci-dessous ou colle un emoji</span></div>
   <div style="margin-top:6px">${ICONES.map(x => `<span class="fc" style="font-size:20px" onclick="pickIc('${x}')">${x}</span>`).join('')}<span class="fc" onclick="pickIc('')">aucune</span></div>
   <label>Photo (pour aider à reconnaître l’endroit)</label>
-  <div class="photos">${a ? `<div class="slot" ${e.nouv ? '' : `data-ph="${e.ph}"`}>${src ? `<img src="${src}">` : '…'}${e.nouv && e.nouv.st === 'envoi' ? '<div class="up">⏫ envoi…</div>' : ''}${e.nouv && e.nouv.st === 'err' ? '<div class="up">⚠️ échec</div>' : ''}</div>` : '<span class="meta">Aucune photo</span>'}</div>
-  <div class="row"><label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">🖼️ ${a ? 'Changer' : 'Ajouter'} la photo<input type="file" accept="image/\x2a" hidden onchange="enPhoto(this.files[0]);this.value=''"></label>${a ? '<button class="btn del" onclick="enRetirer()">Retirer la photo</button>' : ''}</div>
-  <div class="row" style="margin-top:16px"><button class="btn sec" onclick="EN=null;closeM()">Annuler</button><button class="btn" id="enSave" onclick="enSave()">💾 Enregistrer</button></div>`, true);
+  <div class="photos">${a ? `<div class="slot" ${e.nouv ? '' : `data-ph="${e.ph}"`}>${src ? `<img src="${src}">` : '…'}${e.nouv && e.nouv.st === 'envoi' ? '<div class="up">envoi…</div>' : ''}${e.nouv && e.nouv.st === 'err' ? '<div class="up">échec</div>' : ''}</div>` : '<span class="meta">Aucune photo</span>'}</div>
+  <div class="row"><label class="btn sec" style="margin:0;font-size:15px;color:var(--acc)">${ic('photo', 'sm')} ${a ? 'Changer' : 'Ajouter'} la photo<input type="file" accept="image/\x2a" hidden onchange="enPhoto(this.files[0]);this.value=''"></label>${a ? '<button class="btn del" onclick="enRetirer()">Retirer la photo</button>' : ''}</div>
+  <div class="row" style="margin-top:16px"><button class="btn sec" onclick="EN=null;closeM()">Annuler</button><button class="btn" id="enSave" onclick="enSave()">Enregistrer</button></div>`, true);
   needMinis();
 }
 function pickIc(v) { EN.nom = $('#en_nom').value; EN.ic = v; drawEdit(); }
@@ -807,7 +904,7 @@ async function enSave() {
   if (e.nouv && e.nouv.p) await e.nouv.p;
   if (e.nouv && e.nouv.st !== 'ok') return toast('La photo n’a pas été envoyée : réessaie ou retire-la', 4000);
   e.saving = true; const btn = $('#enSave'); if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
-  const fin = () => { e.saving = false; const b = $('#enSave'); if (b) { b.disabled = false; b.textContent = '💾 Enregistrer'; } };
+  const fin = () => { e.saving = false; const b = $('#enSave'); if (b) { b.disabled = false; b.textContent = 'Enregistrer'; } };
   const n = N(e.k, e.id); let r;
   if (e.nom !== n.nom) { r = await act(() => api('renommerNoeud', S.base.id, e.k, e.id, e.nom)); if (!r) return fin(); n.nom = r.nom; }
   const ch = {};
@@ -817,11 +914,11 @@ async function enSave() {
     r = await act(() => api('definirNoeud', S.base.id, e.k, e.id, ch)); if (!r) return fin();
     n.ic = r.ic; n.ph = r.ph; if (e.nouv && okMini(e.nouv.mini)) TH[r.ph] = e.nouv.mini;
   }
-  HAY = new WeakMap(); cacheSoon(); EN = null; closeM(); toast('Enregistré ✔'); render();
+  HAY = new WeakMap(); cacheSoon(); EN = null; closeM(); toast('Enregistré'); render();
 }
 function askDelNode(k, id) {
   const ks = kids(k, id), n = items.filter(i => has(k, id, i)).length;
-  modal(`<h2>⚠️ Supprimer « ${esc(N(k, id).nom)} » ?</h2><p>${ks.length > 1 ? `Ses ${ks.length - 1} sous-entrée(s) seront supprimées aussi. ` : ''}${n ? `<b>${n} élément(s)</b> sont concernés : ils perdront ce classement (ils ne sont pas supprimés). ` : ''}<b>Suppression définitive.</b></p>
+  modal(`<h2>${ic('alert', 'sm')} Supprimer « ${esc(N(k, id).nom)} » ?</h2><p>${ks.length > 1 ? `Ses ${ks.length - 1} sous-entrée(s) seront supprimées aussi. ` : ''}${n ? `<b>${n} élément(s)</b> sont concernés : ils perdront ce classement (ils ne sont pas supprimés). ` : ''}<b>Suppression définitive.</b></p>
   <div class="row"><button class="btn sec" onclick="closeM()">Annuler</button><button class="btn del" onclick="delNode('${k}','${id}')">Supprimer</button></div>`);
 }
 async function delNode(k, id) {
@@ -839,10 +936,10 @@ function vBases() {
   const act1 = b => b.role === 'propriétaire' ? `<button class="btn sec" style="flex:none" onclick="event.stopPropagation();shareM('${b.id}')">Partager</button>` : `<button class="btn del" style="flex:none" onclick="event.stopPropagation();askForget('${b.id}')">${b.role ? 'Quitter' : 'Retirer'}</button>`;
   $('#view').innerHTML = `<div class="card"><h2>Mes bases de données</h2>
   ${S.bases.map(b => `<div class="item" onclick="switchBase('${b.id}')">
-   <div class="thumb">${b.partage ? '👨‍👩‍👧' : '🔐'}</div><div style="flex:1;min-width:0"><b>${esc(b.nom)}</b> ${S.base && S.base.id === b.id ? '✅' : ''}
-   <div class="meta">${b.erreur ? '⚠️ ' + esc(b.erreur) : (b.role === 'propriétaire' ? (b.partage ? 'Partagée' : 'Privée — personne d’autre n’y a accès') : 'Base partagée avec toi') + ' · rôle : ' + esc(b.role)}</div></div>${act1(b)}</div>`).join('') || '<p class="meta">Aucune base.</p>'}
-  <div class="row" style="margin-top:12px"><button class="btn" onclick="newBase()">➕ Créer une base</button><button class="btn sec" onclick="joinM()">🔗 Rejoindre une base</button></div></div>
-  <div class="card meta">Connecté en tant que <b>${esc(S.email)}</b>.<br><button class="btn sec" style="margin:6px 0" onclick="resetLocal()">♻️ Effacer les données gardées sur ce téléphone</button><br>Pour inviter quelqu'un : « Partager » (adresse Gmail + droits), puis envoie-lui le lien d'invitation.${S.base && S.base.role === 'propriétaire' ? `<br><br><button class="btn sec" onclick="cleanMedias()">🧹 Nettoyer les fichiers inutilisés de « ${esc(S.base.nom)} »</button>` : ''}</div>`;
+   <div class="thumb">${b.partage ? ic('users', 'lg') : ic('lock', 'lg')}</div><div style="flex:1;min-width:0"><b>${esc(b.nom)}</b> ${S.base && S.base.id === b.id ? ic('check', 'sm') : ''}
+   <div class="meta">${b.erreur ? ic('alert', 'sm') + ' ' + esc(b.erreur) : (b.role === 'propriétaire' ? (b.partage ? 'Partagée' : 'Privée — personne d’autre n’y a accès') : 'Base partagée avec toi') + ' · rôle : ' + esc(b.role)}</div></div>${act1(b)}</div>`).join('') || '<p class="meta">Aucune base.</p>'}
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="newBase()">${ic('plus', 'sm')} Créer une base</button><button class="btn sec" onclick="joinM()">Rejoindre une base</button></div></div>
+  <div class="card meta">Connecté en tant que <b>${esc(S.email)}</b>.<br><button class="btn sec" style="margin:6px 0" onclick="resetLocal()">${ic('refresh', 'sm')} Effacer les données gardées sur ce téléphone</button><br>Pour inviter quelqu'un : « Partager » (adresse Gmail + droits), puis envoie-lui le lien d'invitation.${S.base && S.base.role === 'propriétaire' ? `<br><br><button class="btn sec" onclick="cleanMedias()">${ic('trash', 'sm')} Nettoyer les fichiers inutilisés de « ${esc(S.base.nom)} »</button>` : ''}</div>`;
 }
 async function retry() { S.error = ''; S.loaded = false; render(); try { setBase(await api('chargerBase', S.base ? S.base.id : (LS.get('dmoc:prefs') || {}).baseActive)); } catch (e) { S.error = msg(e); render(); } }
 async function switchBase(id) {
@@ -855,7 +952,7 @@ async function switchBase(id) {
 }
 async function recharger(silencieux) {
   if (!S.base) return;
-  try { const dt = await api('chargerBase', S.base.id); const open = $('#modalRoot').innerHTML; setBase(dt); if (!silencieux) toast('À jour ✔'); void open; }
+  try { const dt = await api('chargerBase', S.base.id); const open = $('#modalRoot').innerHTML; setBase(dt); if (!silencieux) toast('À jour'); void open; }
   catch (e) { if (!silencieux) toast(msg(e), 3500); }
 }
 function newBase() { nameM('Nom de la nouvelle base', '', async v => { const b = await act(() => api('creerBase', v)); if (b) { S.bases.push(b); toast('Base créée'); switchBase(b.id); } }); }
@@ -897,7 +994,7 @@ function drawShare() {
   <label>Droits</label><select id="sr"><option value="modification">modification (peut ajouter et modifier)</option><option value="lecture">lecture seule</option></select>
   <div class="row" style="margin-top:12px"><button class="btn sec" onclick="closeM()">Fermer</button><button class="btn" onclick="doShare()">Partager</button></div>
   <div class="meta" style="margin-top:8px">Google envoie un e-mail à la personne. Elle doit ensuite ouvrir le lien d'invitation avec ce même compte Gmail.</div>
-  <div class="card" style="margin-top:12px"><b>🔗 Lien d'invitation</b>${SH.lien ? `<div class="linkbox">${esc(SH.lien)}</div><div class="row"><button class="btn sec" onclick="copyLink()">Copier</button><button class="btn sec" onclick="shareLink()">Envoyer…</button></div>` : `<div><button class="btn sec" style="margin-top:6px" onclick="showLink()">Afficher le lien</button></div>`}</div>`;
+  <div class="card" style="margin-top:12px"><b>Lien d'invitation</b>${SH.lien ? `<div class="linkbox">${esc(SH.lien)}</div><div class="row"><button class="btn sec" onclick="copyLink()">Copier</button><button class="btn sec" onclick="shareLink()">Envoyer…</button></div>` : `<div><button class="btn sec" style="margin-top:6px" onclick="showLink()">Afficher le lien</button></div>`}</div>`;
 }
 async function doShare() {
   const m = $('#sm').value.trim(); if (!m.includes('@')) return toast('E-mail invalide');
@@ -915,7 +1012,7 @@ async function retirer(k) {
 async function showLink() { const l = await act(() => api('lienInvitation', SH.id)); if (l) { SH.lien = l; drawShare(); } }
 function copyLink() {
   const l = SH.lien;
-  const fin = ok => toast(ok ? 'Lien copié ✔' : 'Copie impossible : appuie longuement sur le lien pour le copier', 3500);
+  const fin = ok => toast(ok ? 'Lien copié' : 'Copie impossible : appuie longuement sur le lien pour le copier', 3500);
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(l).then(() => fin(true), () => fin(false)); else fin(false);
 }
 function shareLink() {

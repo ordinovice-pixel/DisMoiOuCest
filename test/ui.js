@@ -37,37 +37,38 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   }
   const ok = (c, msg) => { console.log(c ? '  ✔' : '  ✘', msg); if (!c) errs.push('ECHEC: ' + msg); };
   const txt = p => p.innerText('body');
+  const openAdd = async pg => { await pg.click('nav button:nth-child(4)'); await pg.click('text=Ajouter un élément'); };
 
   console.log('Alice – première ouverture');
   const a = await ouvre('alice@gmail.com');
   await a.waitForSelector('#res .card h2', { timeout: 8000 });
   ok((await txt(a)).includes('Ma base perso'), 'base perso affichée');
-  ok((await txt(a)).includes('Aucun élément'), 'accueil vide');
+  ok((await txt(a)).includes('Rien de classé'), 'accueil vide');
   await a.screenshot({ path: OUT + '/01-accueil-vide.png' });
 
   console.log('Ajout d’un élément');
-  await a.click('nav button:nth-child(5)');
+  await openAdd(a);
   await a.fill('#f_titre', 'Perceuse Bosch');
   await a.fill('#f_desc', 'Perceuse sans fil 18V');
   await a.click('.pickbtn >> nth=0');            // catégorie
-  await a.waitForSelector('.pr span');
-  await a.click('.pr span >> nth=0');
+  await a.waitForSelector('#modalRoot .pr>span:not(.node)');
+  await a.click('#modalRoot .pr>span:not(.node) >> nth=0');
   await a.click('.pickbtn >> nth=2');            // emplacement
-  await a.waitForSelector('.pr span');
-  await a.click('.pr span >> nth=0');
+  await a.waitForSelector('#modalRoot .pr>span:not(.node)');
+  await a.click('#modalRoot .pr>span:not(.node) >> nth=0');
   await a.fill('#f_tags', 'outil bricolage');
   // photo
   const img = require('path').join(OUT, 'p.png'); fs.writeFileSync(img, Buffer.from(png.split(',')[1], 'base64'));
   await a.setInputFiles('input[type=file][multiple]', img);
   await a.waitForSelector('#phBox .slot img', { timeout: 5000 });
   await a.screenshot({ path: OUT + '/02-formulaire.png' });
-  await a.click('#saveBtn');
+  await a.click('#saveBtn'); await a.waitForSelector('#saveBtn', { state: 'detached', timeout: 8000 }); await a.click('nav button:nth-child(1)');
   await a.waitForFunction(() => !document.querySelector('#saveBtn') && document.body.innerText.includes('Perceuse Bosch'), null, { timeout: 8000 }).catch(() => { });
   ok((await txt(a)).includes('Perceuse Bosch'), 'élément enregistré et visible');
   await a.waitForSelector('.item .thumb img', { timeout: 5000 }).then(() => ok(true, 'miniature affichée'), () => ok(false, 'miniature affichée'));
 
   console.log('Création à la volée d’une catégorie');
-  await a.click('nav button:nth-child(5)');
+  await openAdd(a);
   await a.fill('#f_titre', 'Facture EDF');
   await a.click('.pickbtn >> nth=0');
   await a.click('text=＋ Ajouter ici >> nth=0');
@@ -75,9 +76,9 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   await a.click('text=Créer et choisir');
   await a.waitForSelector('#f_titre');
   ok((await txt(a)).includes('Factures test'), 'catégorie créée et choisie');
-  await a.click('.pickbtn >> nth=2'); await a.click('.pr span >> nth=1');
+  await a.click('.pickbtn >> nth=2'); await a.click('#modalRoot .pr>span:not(.node) >> nth=1');
   await a.check('#f_sens'); await a.fill('#f_sv', 'code-1234');
-  await a.click('#saveBtn'); await a.waitForSelector('#saveBtn', { state: 'detached', timeout: 8000 });
+  await a.click('#saveBtn'); await a.waitForSelector('#saveBtn', { state: 'detached', timeout: 8000 }); await a.click('nav button:nth-child(1)');
 
   console.log('Recherche, fiche, valeur sensible');
   await a.fill('#qs', 'facture'); await a.press('#qs', 'Enter');
@@ -92,10 +93,10 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   await a.waitForFunction(() => document.body.innerText.includes('code-1234'));
   ok(true, 'valeur sensible affichée à la demande');
   await a.screenshot({ path: OUT + '/03-fiche.png' });
-  await a.click('text=✕ >> nth=0');
+  await a.click('button[title="Fermer"] >> nth=0');
 
   console.log('Autres vues');
-  for (const [k, n] of [['dash', 2], ['infos', 3], ['manage', 4], ['bases', 6]]) {
+  for (const [k, n] of [['dash', 2], ['infos', 3], ['manage', 4], ['bases', 5]]) {
     await a.click(`nav button:nth-child(${n})`); await a.waitForTimeout(200);
     await a.screenshot({ path: OUT + `/04-${k}.png` });
   }
@@ -103,13 +104,13 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
 
   console.log('Icônes et rubrique Aide');
   await a.click('nav button:nth-child(1)'); await a.click('text=Effacer');
-  ok((await a.innerHTML('#res')).includes('📷'), 'icône photo sur la ligne');
-  await a.click('nav button:nth-child(7)'); await a.waitForTimeout(150);
+  ok((await a.innerHTML('#res')).includes('#i-photo'), 'icône photo sur la ligne');
+  await a.click('nav button:nth-child(6)'); await a.waitForTimeout(150);
   ok((await txt(a)).includes('Le problème que résout'), 'Aide : à quoi ça sert');
   await a.screenshot({ path: OUT + '/10-aide.png' });
   await a.click('text=Fonctionnalités'); ok((await txt(a)).includes('Retrouver'), 'Aide : fonctionnalités');
-  await a.click('text=Tutos >> nth=-1'); ok((await txt(a)).includes('Bientôt disponible'), 'Aide : tutos');
-  await a.click('nav button:nth-child(6)');
+  await a.click('text=Tutos >> nth=-1'); ok((await txt(a)).includes('Bien démarrer'), 'Aide : tutos');
+  await a.click('nav button:nth-child(5)');
 
   console.log('Icônes / photos des emplacements, sous-emplacements');
   await a.click('nav button:nth-child(4)'); await a.waitForSelector('text=Emplacements');
@@ -127,9 +128,9 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   await a.click('#enSave'); await a.waitForSelector('#enSave', { state: 'detached', timeout: 8000 });
   ok((await a.innerText('.pr:has-text("Près du frigo")')).includes('🗄️'), 'icône visible dans la gestion');
   await a.waitForSelector('.pr:has-text("Près du frigo") .thumb img', { timeout: 6000 }).then(() => ok(true, 'miniature de la photo visible'), () => ok(false, 'miniature de la photo visible'));
-  await a.click('text=✨ Suggérer des icônes >> nth=0'); await a.waitForTimeout(400);
+  await a.click('text=Suggérer des icônes >> nth=0'); await a.waitForTimeout(400);
   await a.screenshot({ path: OUT + '/11-gestion.png' });
-  await a.click('nav button:nth-child(5)'); await a.fill('#f_titre', 'Cartons de peinture'); await a.fill('#f_desc', 'Pots de peinture blanche et bleue');
+  await openAdd(a); await a.fill('#f_titre', 'Cartons de peinture'); await a.fill('#f_desc', 'Pots de peinture blanche et bleue');
   await a.click('.pickbtn >> nth=0'); await a.click('.sheet .pr span >> nth=0');
   await a.click('.pickbtn >> nth=2'); await a.click('.sheet .pr span:has-text("Près du frigo")');
   ok((await a.innerText('.pickbtn >> nth=2')).includes('Garage'), 'chemin complet affiché');
@@ -140,7 +141,7 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   ok((await txt(a)).includes('Pour t’aider à trouver l’endroit'), 'fiche : photos de l’emplacement');
   await a.click('.slot[data-ph] >> nth=-1'); await a.waitForSelector('.viewer img', { timeout: 6000 }).then(() => ok(true, 'photo de l’emplacement agrandie'), () => ok(false, 'photo de l’emplacement agrandie'));
   await a.screenshot({ path: OUT + '/12-viewer.png' }); await a.click('text=Fermer'); await a.evaluate(() => closeM());
-  await a.click('nav button:nth-child(6)');
+  await a.click('nav button:nth-child(5)');
 
   console.log('Partage avec Bob');
   await a.click('text=Partager');
@@ -159,12 +160,12 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   const tb = await txt(bb);
   ok(tb.includes('lecture seule'), 'Bob voit « lecture seule »');
   ok(tb.includes('Perceuse Bosch') || tb.includes('Facture EDF'), 'Bob voit les éléments d’Alice');
-  await bb.click('nav button:nth-child(5)');
+  await openAdd(bb);
   ok((await txt(bb)).includes('lecture seule'), 'ajout refusé en lecture seule');
   await bb.screenshot({ path: OUT + '/06-bob.png' });
 
   console.log('Rechargement pendant la saisie (retour caméra)');
-  await a.evaluate(() => closeM()); await a.click('nav button:nth-child(5)'); await a.fill('#f_titre', 'Brouillon test'); await a.waitForTimeout(900);
+  await a.evaluate(() => closeM()); await openAdd(a); await a.fill('#f_titre', 'Brouillon test'); await a.waitForTimeout(900);
   await a.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await a.reload(); await a.waitForSelector('#f_titre', { timeout: 8000 }).catch(() => { });
   ok((await a.inputValue('#f_titre').catch(() => '')) === 'Brouillon test', 'formulaire rouvert avec le brouillon après rechargement');

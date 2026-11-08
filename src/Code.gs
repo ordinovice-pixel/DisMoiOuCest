@@ -15,6 +15,8 @@
  */
 
 const APP = { NOM: "Dis moi où c'est !", SCHEMA: '1', PREFIXE: 'DMOC – ' };
+// Icône de l'onglet : PNG hébergé sur GitHub (dépôt public, dossier docs/). Mettre '' pour désactiver.
+const FAVICON_URL = 'https://raw.githubusercontent.com/ordinovice-pixel/DisMoiOuCest/main/docs/favicon-64.png';
 
 /** Page servie par l'application (…/exec). La page de test reste disponible avec …/exec?page=diag */
 const PAGE_PRINCIPALE = 'index';
@@ -45,6 +47,7 @@ function doGet(e) {
   }
   return sortie
     .setTitle(APP.NOM)
+    .setFaviconUrl(FAVICON_URL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
