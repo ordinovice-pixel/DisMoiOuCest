@@ -86,7 +86,7 @@ La fiche donne le chemin complet, les photos des lieux (pour reconnaître l'endr
 |:--:|:--:|:--:|
 | ![Tableaux de bord](captures/07-tableaux-de-bord.png) | ![Bases](captures/08-bases.png) | ![Tutos](captures/09-aide-tutos.png) |
 
-### Trois chartes, clair et sombre
+### 6 chartes, 3 couleurs, 2 modes : clair et sombre
 
 | Océan sombre | Azur clair | Indigo sombre |
 |:--:|:--:|:--:|
