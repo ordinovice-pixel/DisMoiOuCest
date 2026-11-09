@@ -14,7 +14,7 @@ Conçu par **Jeff Madeline** ([OrdiNovice](https://www.ordinovice.fr) · [IA+Sim
 
 Où est la facture du lave-linge ? Dans quel dossier ai-je mis les photos de vacances ? À qui ai-je prêté la scie sauteuse ? Quel est le code de l'alarme ?
 
-Les affaires physiques (outils, papiers, factures) et les choses immatérielles (fichiers, photos, codes, contrats, abonnements, idées) se perdent de la même façon. L'objectif : **un seul endroit**, accessible partout, où l'on note où se trouve chaque chose, et qui permet de la retrouver sans fouiller.
+Les affaires physiques (outils, papiers, factures) et les choses immatérielles (fichiers, photos, codes, contrats, abonnements, idées) se perdent de la même façon. L'objectif : **un seul endroit**, accessible partout, où l'on note (on peut faire une capture d'écran si on préfère) où se trouve chaque chose, et qui permet de la retrouver sans fouiller.
 
 ---
 
