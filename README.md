@@ -24,7 +24,7 @@ Les affaires physiques (outils, papiers, factures) et les choses immatérielles 
 - **Recherche multi-mots** depuis l'accueil : les accents et les majuscules sont ignorés, titre, description et mots-clés sont fouillés.
 - **Filtres multicritères** dans « Mes Infos » : catégories, emplacements, prêté ou non, sensible, avec photo, avec son, dates.
 - Affichage en **liste** ou en **tableau**, export **CSV** (protégé contre l'injection de formules).
-- Chaque ligne montre le chemin complet (*Maison › Garage › Armoire métallique › Étagère du haut*), une photo miniature et des icônes (description, photo, son).
+- Chaque ligne montre le chemin complet (*Maison › Garage › Armoire métallique › Étagère du haut*), une photo miniature et des icônes (description, photo, enregistrement audio).
 
 ### 🗂️ Classer
 - **Catégories** (Outils, Papiers, Factures, Fichiers informatiques, Idées…) et **emplacements** (Maison › Garage…, Ordinateur › Images…, Smartphones…) organisés en **arbre**, à plusieurs niveaux.
