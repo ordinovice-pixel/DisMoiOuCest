@@ -33,7 +33,7 @@ Les affaires physiques (outils, papiers, factures) et les choses immatérielles 
 - Une 2ᵉ catégorie et un 2ᵉ emplacement possibles pour un même élément.
 
 ### 📝 Documenter
-- Titre, description, mots-clés, **photos** (galerie ou ordinateur, envoi en arrière-plan), **enregistrement sonore** (enregistreur du téléphone ou import, 5 Mo max), date d'achat et de fin (garantie, abonnement).
+- Titre, description, mots-clés, **photos** (galerie ou ordinateur, envoi en arrière-plan), **enregistrement sonore** (enregistreur du téléphone ou import, 5 Mo max), date d'achat et de fin de garantie (garantie, abonnement).
 - **Brouillon** conservé si la page se recharge (jamais la valeur sensible).
 
 ### 🤝 Prêter
